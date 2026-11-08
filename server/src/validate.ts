@@ -2,7 +2,7 @@ import type { Allowlist } from "./catalog.js";
 import type { ProfanityFilter } from "./profanity.js";
 
 export const SLOTS = ["HELMET", "CHESTPLATE", "LEGGINGS", "BOOTS"] as const;
-export const POSITIONS = ["FOLLOW", "LEFT_SHOULDER", "RIGHT_SHOULDER", "HEAD", "LEFT_ARM", "RIGHT_ARM", "BEHIND"] as const;
+export const POSITIONS = ["FOLLOW", "SKYBLOCK_PET", "LEFT_SHOULDER", "RIGHT_SHOULDER", "HEAD", "LEFT_ARM", "RIGHT_ARM", "BEHIND"] as const;
 export const MAX_PET_NAME = 24;
 
 export interface ArmorCosmetic { dye: string | null; rune: string | null; runeLevel: number }

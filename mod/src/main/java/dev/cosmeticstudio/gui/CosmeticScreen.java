@@ -71,7 +71,6 @@ public final class CosmeticScreen extends Screen {
 	private @Nullable Component status;
 	private int statusColor = 0xFFFFFFFF;
 	private String presetName = "";
-	private int presetIndex = -1;
 
 	private @Nullable OptionList<String> list;
 	private @Nullable EditBox searchBox;
@@ -139,28 +138,26 @@ public final class CosmeticScreen extends Screen {
 		addRenderableWidget(Button.builder(Component.translatable(target == Target.PET ? "cosmeticstudio.gui.clear_pet" : "cosmeticstudio.gui.clear_piece"),
 				b -> clearPiece()).bounds(left + (bw + 4), by, bw, 20).build());
 		addRenderableWidget(Button.builder(Component.translatable("cosmeticstudio.gui.reset_all"), b -> resetAll()).bounds(left + 2 * (bw + 4), by, bw, 20).build());
-		addRenderableWidget(Button.builder(Component.translatable("cosmeticstudio.gui.done"), b -> { apply(); onClose(); })
+		addRenderableWidget(Button.builder(Component.translatable("cosmeticstudio.gui.done"), b -> onClose())
 				.bounds(width - 8 - bw, by, bw, 20).build());
 
-		// Bottom row 2: presets
+		// Bottom row 2: presets (any number; managed in PresetScreen)
 		int ry = height - 24;
-		EditBox name = new EditBox(font, left, ry, 110, 20, Component.translatable("cosmeticstudio.gui.preset_name"));
+		EditBox name = new EditBox(font, left, ry, 130, 20, Component.translatable("cosmeticstudio.gui.preset_name"));
 		name.setHint(Component.translatable("cosmeticstudio.gui.preset_hint"));
 		name.setMaxLength(32);
 		name.setValue(presetName);
 		name.setResponder(s -> presetName = s);
 		addRenderableWidget(name);
-		addRenderableWidget(Button.builder(Component.translatable("cosmeticstudio.gui.save_preset"), b -> savePreset()).bounds(left + 114, ry, 50, 20).build());
-		List<String> names = new ArrayList<>(store.presets().keySet());
-		Component loadLabel = names.isEmpty() ? Component.translatable("cosmeticstudio.gui.no_presets")
-				: Component.translatable("cosmeticstudio.gui.load_preset", names.get(Math.floorMod(presetIndex, names.size())));
-		Button load = Button.builder(loadLabel, b -> cyclePreset(names)).bounds(left + 168, ry, 130, 20)
-				.tooltip(Tooltip.create(Component.translatable("cosmeticstudio.gui.load_tip"))).build();
-		load.active = !names.isEmpty();
-		addRenderableWidget(load);
-		Button del = Button.builder(Component.translatable("cosmeticstudio.gui.delete_preset"), b -> deletePreset(names)).bounds(left + 302, ry, 50, 20).build();
-		del.active = !names.isEmpty() && presetIndex >= 0;
-		addRenderableWidget(del);
+		addRenderableWidget(Button.builder(Component.translatable("cosmeticstudio.gui.save_preset"), b -> savePreset()).bounds(left + 134, ry, 90, 20)
+				.tooltip(Tooltip.create(Component.translatable("cosmeticstudio.gui.save_preset_tip"))).build());
+		int count = store.presets().size();
+		addRenderableWidget(Button.builder(Component.translatable("cosmeticstudio.gui.presets", count), b -> Compat.setScreen(new PresetScreen(this, working.copy(), look -> {
+			working = look;
+			markDirty();
+			CosmeticResolver.setPreview(working);
+			setStatus(Component.translatable("cosmeticstudio.gui.preset_loaded_any"), 0xFF55FFFF);
+		}))).bounds(left + 228, ry, 110, 20).build());
 	}
 
 	private void initBrowser(int px, int y, int pw, int bottom) {
@@ -461,36 +458,16 @@ public final class CosmeticScreen extends Screen {
 	private void savePreset() {
 		String n = presetName.strip();
 		if (n.isEmpty()) {
-			setStatus(Component.translatable("cosmeticstudio.gui.preset_need_name"), 0xFFFF5555);
-			return;
+			int i = store.presets().size() + 1;
+			while (store.presets().containsKey("Preset " + i)) i++;
+			n = "Preset " + i;
 		}
+		boolean existed = store.presets().containsKey(n);
 		store.savePreset(n, working);
 		store.save();
-		presetIndex = new ArrayList<>(store.presets().keySet()).indexOf(n);
+		presetName = "";
 		rebuildWidgets();
-		setStatus(Component.translatable("cosmeticstudio.gui.preset_saved", n), 0xFF55FF55);
-	}
-
-	private void cyclePreset(List<String> names) {
-		if (names.isEmpty()) return;
-		presetIndex = Math.floorMod(presetIndex + 1, names.size());
-		String n = names.get(presetIndex);
-		working = store.presets().get(n).copy();
-		presetName = n;
-		markDirty();
-		CosmeticResolver.setPreview(working);
-		rebuildWidgets();
-		setStatus(Component.translatable("cosmeticstudio.gui.preset_loaded", n), 0xFF55FFFF);
-	}
-
-	private void deletePreset(List<String> names) {
-		if (presetIndex < 0 || names.isEmpty()) return;
-		String n = names.get(Math.floorMod(presetIndex, names.size()));
-		store.deletePreset(n);
-		store.save();
-		presetIndex = -1;
-		rebuildWidgets();
-		setStatus(Component.translatable("cosmeticstudio.gui.preset_deleted", n), 0xFFAAAAAA);
+		setStatus(Component.translatable(existed ? "cosmeticstudio.presets.updated" : "cosmeticstudio.gui.preset_saved", n), 0xFF55FF55);
 	}
 
 	private void markDirty() {
@@ -504,6 +481,7 @@ public final class CosmeticScreen extends Screen {
 
 	@Override
 	public void onClose() {
+		if (dirty) apply(); // clicking applies; closing (also with Esc) keeps what you picked
 		CosmeticResolver.setPreview(null);
 		Compat.setScreen(null);
 	}

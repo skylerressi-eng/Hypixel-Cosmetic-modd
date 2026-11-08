@@ -20,7 +20,14 @@ public final class Location {
 	public enum Area { NONE, SKYBLOCK, DUNGEON, KUUDRA }
 
 	private static Area area = Area.NONE;
+	private static Area forced;
 	private static int ticks;
+
+	/** Test hook: pretend to be in an area (null = detect normally). */
+	public static void forceForTests(Area a) {
+		forced = a;
+		area = a == null ? Area.NONE : a;
+	}
 
 	private Location() {}
 
@@ -35,7 +42,7 @@ public final class Location {
 	/** Called every client tick; re-reads the scoreboard once per second. */
 	public static void tick(Minecraft mc) {
 		if (++ticks % 20 != 0) return;
-		area = detect(mc);
+		area = forced != null ? forced : detect(mc);
 	}
 
 	static Area detect(Minecraft mc) {

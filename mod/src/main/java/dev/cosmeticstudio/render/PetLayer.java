@@ -6,6 +6,7 @@ import dev.cosmeticstudio.CosmeticStudioClient;
 import dev.cosmeticstudio.compat.Compat;
 import dev.cosmeticstudio.gui.PetCatalog;
 import dev.cosmeticstudio.model.PetCosmetic;
+import dev.cosmeticstudio.model.PetPosition;
 import dev.cosmeticstudio.resolve.CosmeticResolver;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -88,11 +89,18 @@ public final class PetLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 				ps.translate(0, 1.25f + bob, 0.85f);
 				base = 0.55f;
 			}
-			default -> { // FOLLOW: floats beside/behind and lags behind movement like a SkyBlock pet
+			default -> {
+				// FOLLOW and SKYBLOCK_PET: the pet moves on its own (PetEntities.tick); walking mobs stay on the ground.
 				toBodySpace(ps);
-				followOffset(ps, owner, state, pet);
-				ps.translate(0, bob, 0);
-				base = 0.6f;
+				if (owner == null) { ps.popPose(); return; }
+				PetEntities.Pet p = PetEntities.state(owner.getUUID(), pet.kind == PetCosmetic.Kind.ENTITY ? PetCatalog.entity(pet.id) : null);
+				float pt = mc.getDeltaTracker().getGameTimeDeltaPartialTick(true);
+				Vec3 at = p.lerpPos(pt);
+				if (at != null) toWorldOffset(ps, state, at.subtract(state.x, state.y, state.z));
+				else ps.translate(-0.85f, 1.15f, 0.55f);
+				boolean grounded = p.grounded && pet.kind == PetCosmetic.Kind.ENTITY;
+				if (!grounded) ps.translate(0, bob, 0);
+				base = grounded ? 0.7f : 0.6f;
 			}
 		}
 		ps.translate(pet.offsetX * 0.5f, pet.offsetY * 0.5f, pet.offsetZ * 0.5f);
@@ -138,28 +146,11 @@ public final class PetLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 		ps.scale(-1, -1, 1);
 	}
 
-	/** Lagging follow position (exponential smoothing in world space, converted back to body space). */
-	private static void followOffset(PoseStack ps, @Nullable Entity owner, AvatarRenderState state, PetCosmetic pet) {
-		float yaw = state.bodyRot;
-		// Desired spot in body space: to the owner's left, a little behind, around shoulder height.
-		double lx = -0.85, ly = 1.15, lz = 0.55;
-		double rad = Math.toRadians(180 - yaw);
+	/** Moves the pose (in body space) by a world-space offset from the owner's feet. */
+	private static void toWorldOffset(PoseStack ps, AvatarRenderState state, Vec3 d) {
+		double rad = Math.toRadians(180 - state.bodyRot);
 		double cos = Math.cos(rad), sin = Math.sin(rad);
-		// body -> world rotation (rotation about Y by (180 - bodyRot))
-		double wx = lx * cos + lz * sin, wz = -lx * sin + lz * cos;
-		Vec3 ownerPos = new Vec3(state.x, state.y, state.z);
-		Vec3 desired = ownerPos.add(wx, ly, wz);
-		Vec3 current = desired;
-		if (owner instanceof LivingEntity && Minecraft.getInstance().level != null && pet.kind != null) {
-			PetEntities.Pet p = owner.getUUID() == null ? null : PetEntities.followState(owner.getUUID());
-			if (p != null) {
-				if (p.followPos == null || p.followPos.distanceToSqr(desired) > 64) p.followPos = desired;
-				p.followPos = p.followPos.lerp(desired, 0.08);
-				current = p.followPos;
-			}
-		}
-		Vec3 d = current.subtract(ownerPos);
-		// world -> body (inverse rotation)
+		// world -> body (inverse of the body's rotation about Y)
 		double bx = d.x * cos - d.z * sin, bz = d.x * sin + d.z * cos;
 		ps.translate(bx, d.y, bz);
 	}
@@ -183,9 +174,9 @@ public final class PetLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 			@Nullable Entity owner) {
 		EntityType<?> type = PetCatalog.entity(pet.id);
 		if (type == null || owner == null) return 0;
-		PetEntities.Pet p = PetEntities.get(owner.getUUID(), type);
-		if (p == null) return 0;
+		PetEntities.Pet p = PetEntities.state(owner.getUUID(), type);
 		LivingEntity e = p.entity;
+		if (e == null) return 0;
 		Minecraft mc = Minecraft.getInstance();
 		EntityRenderer renderer = mc.getEntityRenderDispatcher().getRenderer(e);
 		EntityRenderState es = renderer.createRenderState(e, 1.0f);
@@ -197,13 +188,21 @@ public final class PetLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 		float size = Math.max(1f, Math.max(es.boundingBoxHeight, es.boundingBoxWidth));
 		float s = scale / size;
 		if (es instanceof LivingEntityRenderState living) {
-			living.bodyRot = 180f;
+			boolean moving = pet.position == PetPosition.FOLLOW || pet.position == PetPosition.SKYBLOCK_PET;
+			float pt = mc.getDeltaTracker().getGameTimeDeltaPartialTick(true);
 			living.yRot = (float) Math.sin(t * 0.03f) * 35f; // idle head turning
 			living.xRot = (float) Math.sin(t * 0.017f) * 8f;
-			boolean walking = pet.position == dev.cosmeticstudio.model.PetPosition.FOLLOW;
-			living.walkAnimationPos = walking ? state.walkAnimationPos : 0;
-			living.walkAnimationSpeed = walking ? state.walkAnimationSpeed : 0;
-			if (pet.spin && !walking) living.bodyRot = 180f + (t * 2f) % 360;
+			if (moving) {
+				// Face the pet's own heading. Body space is rotated by the owner's body yaw, so convert world -> body.
+				living.bodyRot = 180f + p.lerpYaw(pt) - state.bodyRot;
+				living.walkAnimationPos = p.lerpWalk(pt);
+				living.walkAnimationSpeed = p.walkSpeed;
+				if (p.walkSpeed > 0.1f) living.yRot = 0;
+			} else {
+				living.bodyRot = pet.spin ? 180f + (t * 2f) % 360 : 180f;
+				living.walkAnimationPos = 0;
+				living.walkAnimationSpeed = 0;
+			}
 		}
 		ps.pushPose();
 		ps.scale(s, s, s);

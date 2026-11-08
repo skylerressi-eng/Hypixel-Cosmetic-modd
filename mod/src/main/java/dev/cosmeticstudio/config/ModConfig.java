@@ -22,7 +22,7 @@ public final class ModConfig {
 	public boolean disableParticlesInDungeons = true;
 	public boolean disableParticlesInKuudra = true;
 	public boolean allowAnyRuneOnAnyPiece = false;
-	public boolean showUnverifiedRuneEffects = false;
+	public boolean showUnverifiedRuneEffects = true;
 
 	// Dyes
 	public boolean onlyInSkyBlock = false;
@@ -31,6 +31,9 @@ public final class ModConfig {
 	public boolean syncEnabled = true;
 	public String syncServerUrl = "";
 	public String catalogUrl = "https://raw.githubusercontent.com/skylerressi-eng/Hypixel-Cosmetic-modd/HEAD/catalog/cosmetics.json";
+
+	/** Bumped when defaults change so existing configs can be migrated. */
+	public int configVersion;
 
 	private transient Path file;
 
@@ -44,6 +47,11 @@ public final class ModConfig {
 			c = new ModConfig();
 		}
 		c.file = f;
+		if (c.configVersion < 2) {
+			// v2: rune effects are shown by default (they were hidden behind this switch before, so runes looked broken).
+			c.showUnverifiedRuneEffects = true;
+			c.configVersion = 2;
+		}
 		c.particleDensity = Math.max(0f, Math.min(2f, c.particleDensity));
 		if (c.syncServerUrl == null) c.syncServerUrl = "";
 		if (c.catalogUrl == null) c.catalogUrl = "";

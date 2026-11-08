@@ -5,6 +5,7 @@ import dev.cosmeticstudio.compat.Compat;
 import dev.cosmeticstudio.gui.CosmeticScreen;
 import dev.cosmeticstudio.model.PetCosmetic;
 import dev.cosmeticstudio.model.PetPosition;
+import dev.cosmeticstudio.render.PetEntities;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -21,6 +22,27 @@ public class PetGameTest implements FabricClientGameTest {
 			context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
 
 			shot(context, PetCosmetic.Kind.ENTITY, "minecraft:fox", PetPosition.FOLLOW, "Birch Buddy");
+			// A walking mob following you stands on the ground (feet level), not in the air...
+			context.runOnClient(mc -> {
+				var pos = PetEntities.position(mc.player.getUUID());
+				if (pos == null || Math.abs(pos.y - mc.player.getY()) > 0.3) throw new AssertionError("fox should be on the ground, was at " + pos + " player y " + mc.player.getY());
+			});
+			// ...and walks after you when you move.
+			world.getServer().runCommand("execute as @p at @s run tp @s ~4 ~ ~");
+			context.waitTicks(3);
+			context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+			context.takeScreenshot("m6-pet-follow-walking");
+			context.waitTicks(40);
+			context.runOnClient(mc -> {
+				var pos = PetEntities.position(mc.player.getUUID());
+				if (pos == null || pos.distanceTo(mc.player.position()) > 2.5) throw new AssertionError("fox should have caught up, was at " + pos);
+				mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
+			});
+			shot(context, PetCosmetic.Kind.ENTITY, "minecraft:allay", PetPosition.FOLLOW, null);
+			context.runOnClient(mc -> {
+				var pos = PetEntities.position(mc.player.getUUID());
+				if (pos == null || pos.y - mc.player.getY() < 0.8) throw new AssertionError("allay (flying) should float, was at " + pos);
+			});
 			shot(context, PetCosmetic.Kind.BLOCK, "minecraft:diamond_block", PetPosition.LEFT_SHOULDER, null);
 			shot(context, PetCosmetic.Kind.ENTITY, "minecraft:axolotl", PetPosition.RIGHT_SHOULDER, null);
 			shot(context, PetCosmetic.Kind.ENTITY, "minecraft:chicken", PetPosition.HEAD, "Hat");

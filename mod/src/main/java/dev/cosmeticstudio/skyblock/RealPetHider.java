@@ -2,6 +2,8 @@ package dev.cosmeticstudio.skyblock;
 
 import dev.cosmeticstudio.CosmeticStudioClient;
 import dev.cosmeticstudio.model.PetCosmetic;
+import dev.cosmeticstudio.model.PetPosition;
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -21,7 +23,9 @@ import net.minecraft.world.phys.AABB;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Optionally hides the local player's real SkyBlock pet on <b>their own screen</b> (render-side only).
+ * Finds the local player's real SkyBlock pet and hides it on <b>their own screen</b> (render-side only), either because
+ * "Hide my real SkyBlock pet" is on or because the cosmetic pet uses "Replace my SkyBlock pet" (then the cosmetic is
+ * drawn exactly where the real pet model is).
  *
  * How SkyBlock pets look client-side (same identification SkyHanni uses): an invisible armor stand whose custom name is
  * the pet name tag {@code §8[§7Lv99§8] §6Ammonite}, plus an armor stand wearing a player head (the pet model) just below.
@@ -35,6 +39,7 @@ public final class RealPetHider {
 	static final Pattern TAB_PET = Pattern.compile("\\[Lvl [\\d,]+] (?:\\[\\d+✦] )?([A-Za-z][\\w -]*?)(?: ✦)?$");
 
 	private static Set<Entity> hidden = Collections.newSetFromMap(new WeakHashMap<>());
+	private static WeakReference<ArmorStand> model = new WeakReference<>(null);
 	private static int ticks;
 
 	private RealPetHider() {}
@@ -43,14 +48,22 @@ public final class RealPetHider {
 		return !hidden.isEmpty() && hidden.contains(e);
 	}
 
+	/** The armor stand showing our real pet's model (head), if found. Used by "Replace my SkyBlock pet". */
+	public static @Nullable ArmorStand modelStand() {
+		ArmorStand s = model.get();
+		return s != null && !s.isRemoved() ? s : null;
+	}
+
 	public static void tick(Minecraft mc) {
-		if (++ticks % 10 != 0) return;
+		if (++ticks % 5 != 0) return;
 		Set<Entity> next = Collections.newSetFromMap(new WeakHashMap<>());
+		ArmorStand foundModel = null;
 		PetCosmetic pet = CosmeticStudioClient.store().pet();
-		if (mc.player != null && mc.level != null && pet.isActive() && pet.hideRealPet && Location.inSkyBlock()
+		boolean replace = pet.isActive() && pet.position == PetPosition.SKYBLOCK_PET;
+		if (mc.player != null && mc.level != null && pet.isActive() && (pet.hideRealPet || replace) && Location.inSkyBlock()
 				&& CosmeticStudioClient.config().showMyCosmetics) {
 			String active = activePetFromTab(mc);
-			double radius = active != null ? 5.0 : 3.0;
+			double radius = active != null ? 6.0 : 4.0;
 			AABB box = mc.player.getBoundingBox().inflate(radius);
 			ArmorStand best = null;
 			double bestDist = Double.MAX_VALUE;
@@ -65,14 +78,18 @@ public final class RealPetHider {
 			}
 			if (best != null) {
 				final ArmorStand tag = best;
-				next.add(tag);
 				// The head-wearing stand that shows the pet model sits just below its name tag.
 				AABB below = tag.getBoundingBox().inflate(0.8, 2.0, 0.8);
 				List<ArmorStand> models = mc.level.getEntitiesOfClass(ArmorStand.class, below,
 						s -> s != tag && s.getItemBySlot(EquipmentSlot.HEAD).is(Items.PLAYER_HEAD));
-				models.stream().min((a, b) -> Double.compare(a.distanceToSqr(tag), b.distanceToSqr(tag))).ifPresent(next::add);
+				foundModel = models.stream().min((a, b) -> Double.compare(a.distanceToSqr(tag), b.distanceToSqr(tag))).orElse(null);
+				if (foundModel != null) next.add(foundModel);
+				// Keep the real name tag in replace mode unless we hide it or show our own name instead.
+				boolean ownName = pet.showName && pet.name != null;
+				if (pet.hideRealPet || !replace || ownName) next.add(tag);
 			}
 		}
+		model = new WeakReference<>(foundModel);
 		hidden = next;
 	}
 

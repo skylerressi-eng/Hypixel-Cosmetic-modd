@@ -25,7 +25,10 @@ Configure button). These links always point to the newest build.
 - **Runes** tab: all 69 runes with levels I–III, coloured like in game, with description, rarity and the slot
   SkyBlock normally allows. Filter "Fits piece" / all / by slot type; sort A–Z / rarity / slot.
 - Hover anything to preview it live; click to select (click again to remove).
-- Apply · Clear piece · Reset all · Done, and named presets ("Birch Fit") that store armor + pet together.
+- Apply · Clear piece · Reset all · Done. Closing the screen (even with Esc) keeps what you picked.
+- **Presets**: save as many outfits as you like ("Birch Fit", "Necron Black", …). Each stores all armor
+  cosmetics + the pet. The Presets screen lists them all with a summary: Load, Overwrite, Delete, Save current
+  (leave the name empty to auto-name).
 - Clear messages instead of silent failures: non-leather pieces show "isn't dyeable", runes on the wrong
   slot explain how to allow them, unverified rune effects say so.
 
@@ -40,15 +43,20 @@ Configure button). These links always point to the newest build.
 - Follows the vanilla **Particles** video setting, plus an on/off switch, a density slider and
   "Off in Dungeons / Kuudra" switches.
 - "Any rune on any piece" config toggle (off = SkyBlock's slot rules).
-- **No public source documents what rune particles look like**, so the effects shipped are clearly marked
-  approximations and are hidden unless you enable "Show unverified rune effects". See `MISSING_DATA.md`.
+- **No public source documents what rune particles look like**, so the effects shipped are approximations
+  derived from each rune's name/description (shown by default, labelled "approximate" in the GUI; turn off with
+  "Show unverified rune effects"). See `MISSING_DATA.md` to correct them.
 
 ### Pets
 - **Blocks**: every block in the game (read from the block registry), with slow spin and gentle bob.
 - **Animals**: every living mob (read from the entity registry), rendered with its normal model and idle
   animations (age-driven blinking/tails, head turning, walk cycle while following).
-- Positions: follow me (lags behind like a SkyBlock pet), left/right shoulder, on my head, left/right arm
-  (moves with the arm), floating behind me. Scale slider and X/Y/Z offsets.
+- **Replace my SkyBlock pet**: hides your real SkyBlock pet's model and draws your block/mob exactly where it is,
+  following it around (your real pet's name tag stays unless you give the cosmetic its own name).
+- Positions: follow me, replace my SkyBlock pet, left/right shoulder, on my head, left/right arm (moves with the
+  arm), floating behind me. Scale slider and X/Y/Z offsets.
+- Walking mobs (fox, wolf, cat, …) **walk on the ground** after you, facing where they go, with their walk
+  animation; flying/swimming mobs (allay, bee, parrot, bat, fish, …) and blocks float.
 - Custom name tag (max 24 chars) with a show/hide toggle.
 - "Hide my real SkyBlock pet": hides your own pet's two armor stands on your screen only. Identified the same
   way other SkyBlock mods do: name tag `[Lv99] Ammonite` (SkyHanni's pattern), matched against the

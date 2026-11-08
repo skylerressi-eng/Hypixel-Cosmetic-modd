@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.client.CameraType;
 
-/** Milestone 5: helmet + chestplate runes (approximate effects opted in) emit particles; turning particles off stops them. */
+/** Milestone 5: helmet + chestplate runes emit particles out of the box; turning particles off stops them. */
 public class RuneGameTest implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
@@ -21,7 +21,7 @@ public class RuneGameTest implements FabricClientGameTest {
 			context.waitTicks(10);
 			context.runOnClient(mc -> {
 				var cfg = CosmeticStudioClient.config();
-				cfg.showUnverifiedRuneEffects = true;
+				if (!cfg.showUnverifiedRuneEffects) throw new AssertionError("rune effects should be on by default");
 				var store = CosmeticStudioClient.store();
 				store.set(null, ArmorSlot.HELMET, ArmorCosmetic.NONE.withRune("SMITTEN_RUNE", 3));
 				store.set(null, ArmorSlot.CHESTPLATE, ArmorCosmetic.NONE.withRune("GRAND_FREEZING_RUNE", 3).withDye("DYE_AQUAMARINE"));
@@ -41,7 +41,6 @@ public class RuneGameTest implements FabricClientGameTest {
 			context.runOnClient(mc -> {
 				var cfg = CosmeticStudioClient.config();
 				cfg.particles = true;
-				cfg.showUnverifiedRuneEffects = false;
 				CosmeticStudioClient.store().clearAllArmor();
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 			});

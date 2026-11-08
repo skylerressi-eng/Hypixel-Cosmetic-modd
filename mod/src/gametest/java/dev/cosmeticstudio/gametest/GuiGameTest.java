@@ -34,7 +34,25 @@ public class GuiGameTest implements FabricClientGameTest {
 			context.clickScreenButton("cosmeticstudio.tab.pet_settings");
 			context.waitTicks(3);
 			context.takeScreenshot("m4-gui-pet-settings");
-			context.runOnClient(mc -> Compat.setScreen(new dev.cosmeticstudio.config.ConfigScreen(null)));
+			context.runOnClient(mc -> {
+				var store = dev.cosmeticstudio.CosmeticStudioClient.store();
+				for (String n : new String[] {"Birch Fit", "Necron Black", "Rainbow Run"}) {
+					var look = new dev.cosmeticstudio.model.Look();
+					look.armor.put(dev.cosmeticstudio.model.ArmorSlot.CHESTPLATE, dev.cosmeticstudio.model.ArmorCosmetic.NONE.withDye("DYE_PURE_BLACK"));
+					store.savePreset(n, look);
+				}
+				store.save();
+				if (store.presets().size() < 3) throw new AssertionError("expected 3 presets, got " + store.presets().size());
+				Compat.setScreen(new dev.cosmeticstudio.gui.PresetScreen(new CosmeticScreen(), new dev.cosmeticstudio.model.Look(), l -> {}));
+			});
+			context.waitTicks(3);
+			context.takeScreenshot("presets");
+			context.runOnClient(mc -> {
+				var store = dev.cosmeticstudio.CosmeticStudioClient.store();
+				for (String n : new java.util.ArrayList<>(store.presets().keySet())) store.deletePreset(n);
+				store.save();
+				Compat.setScreen(new dev.cosmeticstudio.config.ConfigScreen(null));
+			});
 			context.waitTicks(3);
 			context.takeScreenshot("m9-config");
 			context.runOnClient(mc -> Compat.setScreen(null));
