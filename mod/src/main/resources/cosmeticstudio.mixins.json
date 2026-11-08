@@ -3,6 +3,7 @@
 	"package": "dev.cosmeticstudio.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
+		"ClientPacketListenerMixin",
 		"DyeTintMixin",
 		"EntityRenderDispatcherMixin",
 		"EquipmentLayerRendererMixin"

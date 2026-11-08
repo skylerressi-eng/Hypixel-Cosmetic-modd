@@ -30,4 +30,9 @@ public final class Compat {
 			net.minecraft.client.renderer.state.level.CameraRenderState camera) {
 		out.submitNameTag(ps, at, 0, name, false, light, 0.0, camera);
 	}
+
+	/** Position of an incoming particle packet. */
+	public static net.minecraft.world.phys.Vec3 particlePos(net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket packet) {
+		return new net.minecraft.world.phys.Vec3(packet.getX(), packet.getY(), packet.getZ());
+	}
 }

@@ -43,6 +43,10 @@ Configure button). These links always point to the newest build.
 - Follows the vanilla **Particles** video setting, plus an on/off switch, a density slider and
   "Off in Dungeons / Kuudra" switches.
 - "Any rune on any piece" config toggle (off = SkyBlock's slot rules).
+- **Hide real runes**: hides the particles of runes really applied to your SkyBlock items (shown per piece in the
+  Runes tab), on your screen only, so they don't mix with your cosmetic runes. It hides incoming server particles
+  right around you while you wear/hold a runed item; nothing is sent to the server.
+- **Remove all my runes**: clears every cosmetic rune you picked before (all items and slots); dyes and pet stay.
 - **No public source documents what rune particles look like**, so the effects shipped are approximations
   derived from each rune's name/description (shown by default, labelled "approximate" in the GUI; turn off with
   "Show unverified rune effects"). See `MISSING_DATA.md` to correct them.
@@ -160,4 +164,4 @@ Per-version values are in `versions/<mc>.properties`; the few APIs that differ b
 | `skyblock` | Read-only location detection, item UUIDs, real-pet hiding |
 | `gui`, `config` | `/cosmetic` screen, widgets, settings screen, Mod Menu |
 | `sync` | Sync client + remote cache |
-| `mixin` | 3 small mixins: armor dye colour, item icon dye colour, skip rendering hidden pet stands |
+| `mixin` | 4 small mixins: armor dye colour, item icon dye colour, skip rendering hidden pet stands, skip displaying real-rune particles |

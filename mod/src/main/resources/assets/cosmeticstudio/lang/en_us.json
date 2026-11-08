@@ -97,5 +97,13 @@
 	"cosmeticstudio.presets.saved": "Saved preset \"%s\"",
 	"cosmeticstudio.presets.updated": "Updated preset \"%s\"",
 	"cosmeticstudio.presets.empty": "No presets yet — name your outfit above and press Save current.",
-	"cosmeticstudio.presets.current": "Current outfit: %s"
+	"cosmeticstudio.presets.current": "Current outfit: %s",
+	"cosmeticstudio.gui.hide_real_runes": "Hide real runes",
+	"cosmeticstudio.gui.hide_real_runes_tip": "Hides the particles of the runes really applied to your SkyBlock items (on your screen only), so they don't mix with the cosmetic runes you pick here. Only particles right around you are hidden, and only while you wear or hold a runed item.",
+	"cosmeticstudio.gui.remove_all_runes": "Remove all my runes",
+	"cosmeticstudio.gui.remove_all_runes_tip": "Removes every cosmetic rune you picked in this mod, on every item and slot. Dyes and your pet stay.",
+	"cosmeticstudio.gui.runes_removed": "All cosmetic runes removed",
+	"cosmeticstudio.gui.real_rune": "Real rune on this piece: %s (use \"Hide real runes\")",
+	"cosmeticstudio.config.hide_real_runes": "Hide my real runes",
+	"cosmeticstudio.config.hide_real_runes.tip": "Hides particles from the runes really applied to your SkyBlock items (on your screen only), so only your cosmetic runes show."
 }

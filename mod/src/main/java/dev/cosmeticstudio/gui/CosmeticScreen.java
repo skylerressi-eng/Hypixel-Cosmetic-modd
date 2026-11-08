@@ -184,9 +184,42 @@ public final class CosmeticScreen extends Screen {
 					.create(cx + 144, y - 1, 70, 20, Component.translatable("cosmeticstudio.gui.level"), (b, v) -> { runeLevel = v; refreshList(); }));
 		}
 		OptionList.Mode mode = tab == Tab.DYES ? OptionList.Mode.GRID : OptionList.Mode.LIST;
-		list = new OptionList<>(px, y + 22, pw, bottom - (y + 22) - 12, mode, this::onHover, this::onPick);
+		int extra = tab == Tab.RUNES ? 34 : 0;
+		list = new OptionList<>(px, y + 22, pw, bottom - (y + 22) - 12 - extra, mode, this::onHover, this::onPick);
 		addRenderableWidget(list);
 		refreshList();
+		if (tab == Tab.RUNES) {
+			int ry = bottom - 32, half = (pw - 4) / 2;
+			CycleButton<Boolean> hideReal = CycleButton.onOffBuilder(config.hideRealRunes).create(px, ry, half, 20,
+					Component.translatable("cosmeticstudio.gui.hide_real_runes"), (b, v) -> {
+						config.hideRealRunes = v;
+						config.save();
+					});
+			hideReal.setTooltip(Tooltip.create(Component.translatable("cosmeticstudio.gui.hide_real_runes_tip")));
+			addRenderableWidget(hideReal);
+			addRenderableWidget(Button.builder(Component.translatable("cosmeticstudio.gui.remove_all_runes"), b -> removeAllRunes())
+					.bounds(px + half + 4, ry, half, 20).tooltip(Tooltip.create(Component.translatable("cosmeticstudio.gui.remove_all_runes_tip"))).build());
+			ArmorSlot slot = target.armor();
+			String real = slot == null ? null : SkyBlockItems.realRunes(wornStack(slot));
+			if (real != null && status == null) {
+				setStatus(Component.translatable("cosmeticstudio.gui.real_rune", real), 0xFFFFAA00);
+			}
+		}
+	}
+
+	/** Removes every cosmetic rune: all saved items and slots, plus the outfit being edited. Dyes and pet stay. */
+	private void removeAllRunes() {
+		int removed = store.clearAllRunes();
+		for (ArmorSlot s : ArmorSlot.values()) {
+			ArmorCosmetic c = working.get(s);
+			if (c.rune() != null) removed++;
+			ArmorCosmetic stripped = c.withRune(null, 0);
+			if (stripped.isEmpty()) working.armor.remove(s); else working.armor.put(s, stripped);
+		}
+		store.save();
+		CosmeticResolver.setPreview(working);
+		if (list != null) list.setSelected(selectedValue());
+		setStatus(Component.translatable("cosmeticstudio.gui.runes_removed"), 0xFF55FF55);
 	}
 
 	private void initPetSettings(int px, int y, int pw, int bottom) {
@@ -419,6 +452,7 @@ public final class CosmeticScreen extends Screen {
 		if (target == Target.PET) lastPetTab = t; else lastArmorTab = t;
 		filter = t == Tab.RUNES ? "Fits piece" : "All";
 		search = "";
+		status = null;
 		rebuildWidgets();
 	}
 

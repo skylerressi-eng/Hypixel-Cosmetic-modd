@@ -53,6 +53,7 @@ public final class ConfigScreen extends Screen {
 		toggle("no_particles_kuudra", cfg.disableParticlesInKuudra, v -> cfg.disableParticlesInKuudra = v, w);
 		toggle("any_rune", cfg.allowAnyRuneOnAnyPiece, v -> cfg.allowAnyRuneOnAnyPiece = v, w);
 		toggle("unverified_runes", cfg.showUnverifiedRuneEffects, v -> cfg.showUnverifiedRuneEffects = v, w);
+		toggle("hide_real_runes", cfg.hideRealRunes, v -> cfg.hideRealRunes = v, w);
 
 		// Sync section + buttons anchored to the bottom so nothing overlaps on small screens.
 		int sy = height - 50;

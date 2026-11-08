@@ -23,6 +23,8 @@ public final class ModConfig {
 	public boolean disableParticlesInKuudra = true;
 	public boolean allowAnyRuneOnAnyPiece = false;
 	public boolean showUnverifiedRuneEffects = true;
+	/** Hide the server's particles from runes really applied to your items, so they don't mix with cosmetic runes. */
+	public boolean hideRealRunes = false;
 
 	// Dyes
 	public boolean onlyInSkyBlock = false;

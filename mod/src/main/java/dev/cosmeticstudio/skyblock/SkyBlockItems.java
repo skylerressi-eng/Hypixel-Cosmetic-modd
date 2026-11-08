@@ -24,7 +24,7 @@ public final class SkyBlockItems {
 	}
 
 	/** CustomData is immutable, so its parsed "uuid"/"id" can be cached per instance (avoids copying NBT every frame). */
-	private record Ids(String uuid, String id) {}
+	private record Ids(String uuid, String id, String runes) {}
 
 	private static final java.util.Map<CustomData, Ids> CACHE = java.util.Collections.synchronizedMap(new java.util.WeakHashMap<>());
 
@@ -34,9 +34,26 @@ public final class SkyBlockItems {
 		if (data == null || data.isEmpty()) return null;
 		Ids ids = CACHE.computeIfAbsent(data, d -> {
 			CompoundTag tag = d.copyTag();
-			return new Ids(tag.getStringOr("uuid", ""), tag.getStringOr("id", ""));
+			StringBuilder runes = new StringBuilder();
+			tag.getCompound("runes").ifPresent(r -> r.keySet().forEach(k -> runes.append(runes.isEmpty() ? "" : ", ")
+					.append(k).append(' ').append(r.getIntOr(k, 1))));
+			return new Ids(tag.getStringOr("uuid", ""), tag.getStringOr("id", ""), runes.toString());
 		});
-		return "uuid".equals(key) ? ids.uuid() : ids.id();
+		return switch (key) { case "uuid" -> ids.uuid(); case "runes" -> ids.runes(); default -> ids.id(); };
+	}
+
+	/** The real SkyBlock rune(s) applied to this item by Hypixel, e.g. "RAINBOW 3", or null if none. */
+	public static @Nullable String realRunes(ItemStack stack) {
+		String s = customString(stack, "runes");
+		return s == null || s.isEmpty() ? null : s;
+	}
+
+	/** True if the local player wears or holds anything with a real SkyBlock rune. */
+	public static boolean wearingRealRunes(net.minecraft.world.entity.player.Player p) {
+		for (var slot : net.minecraft.world.entity.EquipmentSlot.values()) {
+			if (realRunes(p.getItemBySlot(slot)) != null) return true;
+		}
+		return false;
 	}
 
 	/** True if dyes can recolour this piece (leather-based armor), the same rule SkyBlock uses. */

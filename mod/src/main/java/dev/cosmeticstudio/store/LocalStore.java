@@ -106,6 +106,20 @@ public final class LocalStore {
 		data.bySlot.clear();
 	}
 
+	/** Removes every cosmetic rune (from all items, slots and nothing else); dyes are kept. Returns how many were removed. */
+	public int clearAllRunes() {
+		int[] n = {0};
+		java.util.function.UnaryOperator<ArmorCosmetic> strip = c -> {
+			if (c.rune() != null) n[0]++;
+			return c.withRune(null, 0);
+		};
+		data.byItem.replaceAll((k, c) -> strip.apply(c));
+		data.bySlot.replaceAll((k, c) -> strip.apply(c));
+		data.byItem.values().removeIf(ArmorCosmetic::isEmpty);
+		data.bySlot.values().removeIf(ArmorCosmetic::isEmpty);
+		return n[0];
+	}
+
 	public PetCosmetic pet() {
 		return data.pet.copy();
 	}
