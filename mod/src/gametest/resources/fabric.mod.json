@@ -7,7 +7,8 @@
 	"entrypoints": {
 		"fabric-client-gametest": [
 			"dev.cosmeticstudio.gametest.CommandGameTest",
-			"dev.cosmeticstudio.gametest.DyeGameTest"
+			"dev.cosmeticstudio.gametest.DyeGameTest",
+			"dev.cosmeticstudio.gametest.GuiGameTest"
 		]
 	},
 	"depends": { "cosmeticstudio": "*" }

@@ -1,8 +1,10 @@
 package dev.cosmeticstudio;
 
+import dev.cosmeticstudio.compat.Compat;
+import dev.cosmeticstudio.gui.CosmeticScreen;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.Minecraft;
 
 /**
  * Registers {@code /cosmetic} as a <em>client-side</em> command.
@@ -22,8 +24,9 @@ public final class CosmeticCommand {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) ->
 				dispatcher.register(ClientCommands.literal("cosmetic").executes(ctx -> {
 					invocations++;
-					// sendFeedback only prints to the local chat HUD; nothing is transmitted.
-					ctx.getSource().sendFeedback(Component.translatable("cosmeticstudio.command.placeholder", version));
+					// Open on the next tick: the chat screen is still closing while the command runs.
+					Minecraft mc = ctx.getSource().getClient();
+					mc.schedule(() -> Compat.setScreen(new CosmeticScreen()));
 					return 1;
 				})));
 	}
