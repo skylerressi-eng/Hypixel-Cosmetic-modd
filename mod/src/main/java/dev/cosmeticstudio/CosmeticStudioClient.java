@@ -2,7 +2,12 @@ package dev.cosmeticstudio;
 
 import dev.cosmeticstudio.catalog.CatalogManager;
 import dev.cosmeticstudio.config.ModConfig;
+import dev.cosmeticstudio.render.PetEntities;
+import dev.cosmeticstudio.render.PetLayer;
 import dev.cosmeticstudio.skyblock.Location;
+import dev.cosmeticstudio.skyblock.RealPetHider;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import dev.cosmeticstudio.store.LocalStore;
 import java.nio.file.Path;
 import net.fabricmc.api.ClientModInitializer;
@@ -38,7 +43,15 @@ public final class CosmeticStudioClient implements ClientModInitializer {
 		CatalogManager.load(dir);
 		CatalogManager.refreshAsync(dir, config.catalogUrl);
 
-		ClientTickEvents.END_CLIENT_TICK.register(Location::tick);
+		ClientTickEvents.END_CLIENT_TICK.register(mc -> {
+			Location.tick(mc);
+			RealPetHider.tick(mc);
+			PetEntities.tick();
+		});
+		// Cosmetic pet = an extra layer on every player model (also shows in the GUI preview).
+		LivingEntityRenderLayerRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
+			if (renderer instanceof AvatarRenderer<?> avatar) helper.register(new PetLayer(avatar, context));
+		});
 		CosmeticCommand.register(version);
 		LOGGER.info("Cosmetic Studio {} initialised", version);
 	}

@@ -4,6 +4,7 @@
 	"compatibilityLevel": "JAVA_25",
 	"client": [
 		"DyeTintMixin",
+		"EntityRenderDispatcherMixin",
 		"EquipmentLayerRendererMixin"
 	],
 	"injectors": { "defaultRequire": 1 }
