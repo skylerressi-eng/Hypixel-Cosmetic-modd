@@ -29,6 +29,9 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+// Version-specific code (APIs that differ between Minecraft versions) lives in src/mc<version>/java.
+sourceSets.main.java.srcDir "src/mc${project.minecraft_version}/java"
+
 test { useJUnitPlatform() }
 
 // In-game automated tests (Fabric client gametest API). Run with: ./gradlew :mod:runClientGameTest
@@ -43,6 +46,11 @@ fabricApi {
 }
 
 processResources {
+	// Bundle the generated catalog (see generator/generate.py) into the jar.
+	from(rootProject.file('catalog')) {
+		include 'cosmetics.json', 'rune_effects.json'
+		into 'assets/cosmeticstudio/catalog'
+	}
 	def props = [version: project.version, minecraft_dependency: project.minecraft_dependency]
 	inputs.properties props
 	filesMatching('fabric.mod.json') { expand props }

@@ -1,0 +1,5 @@
+{
+ "schemaVersion": 1,
+ "_comment": "Particle effects per rune. verified=true only for effects checked in game. See MISSING_DATA.md.",
+ "effects": {}
+}

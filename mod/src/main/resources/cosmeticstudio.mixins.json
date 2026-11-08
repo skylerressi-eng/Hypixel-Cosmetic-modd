@@ -2,6 +2,9 @@
 	"required": true,
 	"package": "dev.cosmeticstudio.mixin",
 	"compatibilityLevel": "JAVA_25",
-	"client": [],
+	"client": [
+		"DyeTintMixin",
+		"EquipmentLayerRendererMixin"
+	],
 	"injectors": { "defaultRequire": 1 }
 }

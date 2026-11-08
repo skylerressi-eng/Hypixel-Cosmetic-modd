@@ -5,7 +5,10 @@
 	"name": "Cosmetic Studio Game Tests",
 	"environment": "client",
 	"entrypoints": {
-		"fabric-client-gametest": ["dev.cosmeticstudio.gametest.CommandGameTest"]
+		"fabric-client-gametest": [
+			"dev.cosmeticstudio.gametest.CommandGameTest",
+			"dev.cosmeticstudio.gametest.DyeGameTest"
+		]
 	},
 	"depends": { "cosmeticstudio": "*" }
 }
