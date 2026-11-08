@@ -69,6 +69,9 @@ test("only known ids and clean, short pet names are accepted", async () => {
   assert.equal((await put({ armor: { HELMET: { dye: "DYE_MADE_UP" } } })).statusCode, 400);
   assert.equal((await put({ armor: { HELMET: { rune: "NOPE_RUNE", runeLevel: 1 } } })).statusCode, 400);
   assert.equal((await put({ armor: { HAT: { dye: "DYE_PURE_BLACK" } } })).statusCode, 400);
+  assert.equal((await put({ armor: { HELMET: { look: "sb:NOT_A_HELMET" } } })).statusCode, 400);
+  assert.equal((await put({ armor: { HELMET: { look: "sb:SUPERIOR_DRAGON_HELMET" } } })).statusCode, 200);
+  assert.equal((await put({ armor: { HELMET: { look: "minecraft:carved_pumpkin" } } })).statusCode, 200);
   assert.equal((await put({ pet: { kind: "BLOCK", id: "minecraft:not_a_block" } })).statusCode, 400);
   assert.equal((await put({ pet: { kind: "ENTITY", id: "minecraft:fox", name: "x".repeat(25) } })).statusCode, 400);
   assert.equal((await put({ pet: { kind: "ENTITY", id: "minecraft:fox", name: "fUcK" } })).statusCode, 400);

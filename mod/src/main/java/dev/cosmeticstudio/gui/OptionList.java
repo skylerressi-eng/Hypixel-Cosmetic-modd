@@ -46,6 +46,20 @@ public final class OptionList<T> extends AbstractWidget {
 		this.selected = value;
 	}
 
+	/** Scrolls so the selected entry is visible (e.g. a pre-selected real rune further down the list). */
+	public void scrollToSelected() {
+		if (selected == null) return;
+		for (int i = 0; i < options.size(); i++) {
+			if (Objects.equals(options.get(i).value(), selected)) {
+				int rowTop = (i / columns()) * rowHeight();
+				if (rowTop < scroll || rowTop + rowHeight() > scroll + height) {
+					scroll = Math.max(0, Math.min(maxScroll(), rowTop - height / 2.0 + rowHeight() / 2.0));
+				}
+				return;
+			}
+		}
+	}
+
 	public int size() {
 		return options.size();
 	}

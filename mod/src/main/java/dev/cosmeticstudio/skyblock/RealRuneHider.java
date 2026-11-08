@@ -20,10 +20,23 @@ public final class RealRuneHider {
 
 	private RealRuneHider() {}
 
+	/** True if a worn piece with a real rune has it deselected, or has a different cosmetic rune picked. */
+	static boolean pieceWantsHidden(Player p) {
+		for (dev.cosmeticstudio.model.ArmorSlot slot : dev.cosmeticstudio.model.ArmorSlot.values()) {
+			var stack = p.getItemBySlot(slot.vanilla);
+			if (SkyBlockItems.realRunes(stack) == null) continue;
+			var c = dev.cosmeticstudio.resolve.CosmeticResolver.worn(p, slot, stack);
+			if (c.hideRealRune() || c.rune() != null) return true;
+		}
+		return false;
+	}
+
 	public static boolean shouldHide(double x, double y, double z) {
-		if (CosmeticStudioClient.config() == null || !CosmeticStudioClient.config().hideRealRunes) return false;
+		if (CosmeticStudioClient.config() == null) return false;
 		Player p = Minecraft.getInstance().player;
-		if (p == null || !SkyBlockItems.wearingRealRunes(p)) return false;
+		if (p == null) return false;
+		boolean global = CosmeticStudioClient.config().hideRealRunes && SkyBlockItems.wearingRealRunes(p);
+		if (!global && !pieceWantsHidden(p)) return false;
 		double dx = x - p.getX(), dz = z - p.getZ();
 		boolean hide = dx * dx + dz * dz <= RADIUS * RADIUS && y >= p.getY() - 0.6 && y <= p.getY() + p.getBbHeight() + 1.2;
 		if (hide) hiddenCount++;

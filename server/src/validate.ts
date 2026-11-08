@@ -5,7 +5,7 @@ export const SLOTS = ["HELMET", "CHESTPLATE", "LEGGINGS", "BOOTS"] as const;
 export const POSITIONS = ["FOLLOW", "SKYBLOCK_PET", "LEFT_SHOULDER", "RIGHT_SHOULDER", "HEAD", "LEFT_ARM", "RIGHT_ARM", "BEHIND"] as const;
 export const MAX_PET_NAME = 24;
 
-export interface ArmorCosmetic { dye: string | null; rune: string | null; runeLevel: number }
+export interface ArmorCosmetic { dye: string | null; rune: string | null; runeLevel: number; look: string | null }
 export interface Pet {
   kind: "NONE" | "BLOCK" | "ENTITY";
   id: string | null;
@@ -43,6 +43,8 @@ export function validateLook(input: unknown, allow: Allowlist, profanity: Profan
     const v = value as Record<string, unknown>;
     const dye = v.dye ?? null;
     const rune = v.rune ?? null;
+    const look = v.look ?? null;
+    if (look !== null && (typeof look !== "string" || !allow.looks.has(look))) throw new ValidationError(`unknown look ${String(look)}`);
     if (dye !== null && (typeof dye !== "string" || !allow.dyes.has(dye))) throw new ValidationError(`unknown dye ${String(dye)}`);
     let runeLevel = 0;
     if (rune !== null) {
@@ -50,7 +52,8 @@ export function validateLook(input: unknown, allow: Allowlist, profanity: Profan
       runeLevel = clamp(v.runeLevel, 1, allow.runes.get(rune)!, 1);
       runeLevel = Math.round(runeLevel);
     }
-    if (dye !== null || rune !== null) armor[slot as (typeof SLOTS)[number]] = { dye: dye as string | null, rune: rune as string | null, runeLevel };
+    if (dye !== null || rune !== null || look !== null)
+      armor[slot as (typeof SLOTS)[number]] = { dye: dye as string | null, rune: rune as string | null, runeLevel, look: look as string | null };
   }
 
   const p = (body.pet ?? {}) as Record<string, unknown>;

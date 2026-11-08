@@ -48,6 +48,27 @@ public final class SkyBlockItems {
 		return s == null || s.isEmpty() ? null : s;
 	}
 
+	/** Catalog id of the item's real rune ("RAINBOW" in item data -> "RAINBOW_RUNE"), or null. */
+	public static @Nullable String realRuneId(ItemStack stack) {
+		String r = realRunes(stack);
+		if (r == null) return null;
+		String first = r.split(",")[0].strip();
+		int sp = first.lastIndexOf(' ');
+		return (sp > 0 ? first.substring(0, sp) : first) + "_RUNE";
+	}
+
+	/** Level of the item's real rune, or 0. */
+	public static int realRuneLevel(ItemStack stack) {
+		String r = realRunes(stack);
+		if (r == null) return 0;
+		String first = r.split(",")[0].strip();
+		try {
+			return Integer.parseInt(first.substring(first.lastIndexOf(' ') + 1));
+		} catch (NumberFormatException e) {
+			return 1;
+		}
+	}
+
 	/** True if the local player wears or holds anything with a real SkyBlock rune. */
 	public static boolean wearingRealRunes(net.minecraft.world.entity.player.Player p) {
 		for (var slot : net.minecraft.world.entity.EquipmentSlot.values()) {

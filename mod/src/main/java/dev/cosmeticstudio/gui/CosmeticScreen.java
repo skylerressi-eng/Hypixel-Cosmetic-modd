@@ -45,7 +45,7 @@ public final class CosmeticScreen extends Screen {
 		@Nullable ArmorSlot armor() { return this == PET ? null : ArmorSlot.values()[ordinal()]; }
 	}
 
-	private enum Tab { DYES, RUNES, BLOCKS, ANIMALS, PET_SETTINGS }
+	private enum Tab { DYES, RUNES, LOOKS, BLOCKS, ANIMALS, PET_SETTINGS }
 
 	enum DyeSort { NAME("A–Z"), HUE("Colour"), RARITY("Rarity");
 		final String label; DyeSort(String l) { label = l; } }
@@ -65,6 +65,7 @@ public final class CosmeticScreen extends Screen {
 	private Tab tab;
 	private String search = "";
 	private DyeSort dyeSort = DyeSort.NAME;
+	private DyeSort lookSort = DyeSort.NAME;
 	private RuneSort runeSort = RuneSort.NAME;
 	private String filter = "All";
 	private int runeLevel = 3;
@@ -116,7 +117,7 @@ public final class CosmeticScreen extends Screen {
 		int px = left + 26 + previewW + 8, pw = width - px - 8;
 
 		// Tabs
-		List<Tab> tabs = target == Target.PET ? List.of(Tab.BLOCKS, Tab.ANIMALS, Tab.PET_SETTINGS) : List.of(Tab.DYES, Tab.RUNES);
+		List<Tab> tabs = target == Target.PET ? List.of(Tab.BLOCKS, Tab.ANIMALS, Tab.PET_SETTINGS) : List.of(Tab.DYES, Tab.RUNES, Tab.LOOKS);
 		int tabW = Math.min(80, pw / tabs.size());
 		for (int i = 0; i < tabs.size(); i++) {
 			Tab t = tabs.get(i);
@@ -161,8 +162,7 @@ public final class CosmeticScreen extends Screen {
 	}
 
 	private void initBrowser(int px, int y, int pw, int bottom) {
-		boolean armor = tab == Tab.DYES || tab == Tab.RUNES;
-		int controls = armor ? 3 : 0;
+		int controls = tab == Tab.DYES || tab == Tab.RUNES ? 3 : tab == Tab.LOOKS ? 2 : 0;
 		int searchW = pw - controls * 72;
 		searchBox = new EditBox(font, px, y, Math.max(60, searchW - 4), 18, Component.translatable("cosmeticstudio.gui.search"));
 		searchBox.setHint(Component.translatable("cosmeticstudio.gui.search_hint"));
@@ -182,6 +182,13 @@ public final class CosmeticScreen extends Screen {
 					.create(cx + 72, y - 1, 70, 20, Component.translatable("cosmeticstudio.gui.filter"), (b, v) -> { filter = v; refreshList(); }));
 			addRenderableWidget(CycleButton.<Integer>builder(l -> Component.literal(roman(l)), runeLevel).withValues(1, 2, 3)
 					.create(cx + 144, y - 1, 70, 20, Component.translatable("cosmeticstudio.gui.level"), (b, v) -> { runeLevel = v; refreshList(); }));
+		}
+		if (tab == Tab.LOOKS) {
+			addRenderableWidget(CycleButton.<DyeSort>builder(s -> Component.literal(s.label), lookSort).withValues(DyeSort.NAME, DyeSort.RARITY)
+					.create(cx, y - 1, 70, 20, Component.translatable("cosmeticstudio.gui.sort"), (b, v) -> { lookSort = v; refreshList(); }));
+			addRenderableWidget(CycleButton.<String>builder(Component::literal, List.of("All", "SkyBlock", "Vanilla").contains(filter) ? filter : "All")
+					.withValues("All", "SkyBlock", "Vanilla")
+					.create(cx + 72, y - 1, 70, 20, Component.translatable("cosmeticstudio.gui.filter"), (b, v) -> { filter = v; refreshList(); }));
 		}
 		OptionList.Mode mode = tab == Tab.DYES ? OptionList.Mode.GRID : OptionList.Mode.LIST;
 		int extra = tab == Tab.RUNES ? 34 : 0;
@@ -268,18 +275,27 @@ public final class CosmeticScreen extends Screen {
 		List<Option<String>> opts = switch (tab) {
 			case DYES -> dyeOptions(q);
 			case RUNES -> runeOptions(q);
+			case LOOKS -> lookOptions(q);
 			case BLOCKS -> PetCatalog.blockOptions(q);
 			case ANIMALS -> PetCatalog.entityOptions(q);
 			default -> List.of();
 		};
 		list.setOptions(opts);
 		list.setSelected(selectedValue());
+		list.scrollToSelected();
 	}
 
 	private @Nullable String selectedValue() {
 		ArmorSlot slot = target.armor();
 		if (tab == Tab.DYES && slot != null) return working.get(slot).dye();
-		if (tab == Tab.RUNES && slot != null) return working.get(slot).rune();
+		if (tab == Tab.RUNES && slot != null) {
+			ArmorCosmetic c = working.get(slot);
+			if (c.rune() != null) return c.rune();
+			// The rune really on this item shows as pre-selected until you deselect (hide) it.
+			String real = SkyBlockItems.realRuneId(wornStack(slot));
+			return real != null && !c.hideRealRune() ? real : null;
+		}
+		if (tab == Tab.LOOKS && slot != null) return working.get(slot).look();
 		if ((tab == Tab.BLOCKS && working.pet.kind == PetCosmetic.Kind.BLOCK) || (tab == Tab.ANIMALS && working.pet.kind == PetCosmetic.Kind.ENTITY))
 			return working.pet.id;
 		return null;
@@ -301,7 +317,8 @@ public final class CosmeticScreen extends Screen {
 		Catalog cat = CatalogManager.get();
 		ArmorSlot slot = target.armor();
 		ItemStack worn = wornStack(slot);
-		boolean dyeable = worn.isEmpty() || SkyBlockItems.isDyeable(worn);
+		ItemStack lookStack = slot == null ? ItemStack.EMPTY : dev.cosmeticstudio.render.Appearances.stack(working.get(slot).look());
+		boolean dyeable = lookStack.isEmpty() ? worn.isEmpty() || SkyBlockItems.isDyeable(worn) : SkyBlockItems.isDyeable(lookStack);
 		Comparator<DyeDef> cmp = switch (dyeSort) {
 			case NAME -> Comparator.comparing(DyeDef::name);
 			case HUE -> Comparator.comparing(DyeDef::hue).thenComparing(DyeDef::name);
@@ -326,8 +343,18 @@ public final class CosmeticScreen extends Screen {
 		return out;
 	}
 
+	private static final class MutableComponentHolder {
+		Component c;
+
+		MutableComponentHolder(Component c) {
+			this.c = c;
+		}
+	}
+
 	private List<Option<String>> runeOptions(String q) {
 		ArmorSlot slot = target.armor();
+		String realRune = slot == null ? null : SkyBlockItems.realRuneId(wornStack(slot));
+		int realLevel = slot == null ? 0 : SkyBlockItems.realRuneLevel(wornStack(slot));
 		Comparator<RuneDef> cmp = switch (runeSort) {
 			case NAME -> Comparator.comparing(RuneDef::name);
 			case RARITY -> Comparator.comparing((RuneDef r) -> -Rarity.rank(r.rarityAt(Math.min(runeLevel, r.maxLevel())))).thenComparing(RuneDef::name);
@@ -335,7 +362,7 @@ public final class CosmeticScreen extends Screen {
 		};
 		List<Option<String>> out = new ArrayList<>();
 		CatalogManager.get().runes().values().stream().filter(r -> matches(q, r.name(), r.id())).filter(r -> switch (filter) {
-			case "Fits piece" -> slot != null && fits(r, slot);
+			case "Fits piece" -> slot != null && (fits(r, slot) || r.id().equals(realRune));
 			case "All" -> true;
 			default -> filter.equals(r.slotLabel());
 		}).sorted(cmp).forEach(r -> {
@@ -351,10 +378,46 @@ public final class CosmeticScreen extends Screen {
 			if (effect == null) tip.add(Component.translatable("cosmeticstudio.gui.effect_missing").withStyle(ChatFormatting.GOLD));
 			else if (!effect.verified()) tip.add(Component.translatable(config.showUnverifiedRuneEffects ? "cosmeticstudio.gui.effect_approx"
 					: "cosmeticstudio.gui.effect_approx_off").withStyle(ChatFormatting.GOLD));
-			Component label = Component.literal(r.name() + " " + roman(lvl)).withStyle(nameStyle(r));
-			out.add(new Option<>(r.id(), label, null, null, tip, allowed,
+			boolean isReal = r.id().equals(realRune);
+			MutableComponentHolder label = new MutableComponentHolder(Component.literal(r.name() + " " + roman(isReal ? realLevel : lvl)).withStyle(nameStyle(r)));
+			if (isReal) {
+				label.c = label.c.copy().append(Component.translatable("cosmeticstudio.gui.on_your_item").withStyle(ChatFormatting.GOLD));
+				tip.add(Component.translatable("cosmeticstudio.gui.real_rune_tip").withStyle(ChatFormatting.GOLD));
+			}
+			out.add(new Option<>(r.id(), label.c, null, null, tip, allowed || isReal,
 					Component.translatable("cosmeticstudio.gui.rune_not_allowed", r.slotLabel())));
 		});
+		return out;
+	}
+
+	private List<Option<String>> lookOptions(String q) {
+		ArmorSlot slot = target.armor();
+		if (slot == null) return List.of();
+		List<Option<String>> out = new ArrayList<>();
+		if (!filter.equals("Vanilla")) {
+			CatalogManager.get().appearances().values().stream().filter(a -> a.slot().equals(slot.runeSlot)).filter(a -> matches(q, a.name(), a.id()))
+					.sorted(lookSort == DyeSort.RARITY ? Comparator.comparing((dev.cosmeticstudio.catalog.AppearanceDef a) -> -Rarity.rank(a.rarity()))
+							.thenComparing(dev.cosmeticstudio.catalog.AppearanceDef::name) : Comparator.comparing(dev.cosmeticstudio.catalog.AppearanceDef::name))
+					.forEach(a -> {
+						String id = dev.cosmeticstudio.catalog.AppearanceDef.PREFIX + a.id();
+						int col = Rarity.color(a.rarity());
+						List<Component> tip = new ArrayList<>(List.of(Component.literal(a.name()).withStyle(st -> st.withColor(TextColor.fromRgb(col))),
+								Component.translatable("cosmeticstudio.gui.look_sb").withStyle(ChatFormatting.GRAY)));
+						if (a.rarity() != null) tip.add(Component.literal(a.rarity()).withStyle(st -> st.withColor(TextColor.fromRgb(col)).withBold(true)));
+						out.add(new Option<>(id, Component.literal(a.name()).withStyle(st -> st.withColor(TextColor.fromRgb(col))), null,
+								dev.cosmeticstudio.render.Appearances.stack(id), tip, true, null));
+					});
+		}
+		if (!filter.equals("SkyBlock")) {
+			for (var item : dev.cosmeticstudio.render.Appearances.vanillaFor(slot)) {
+				String id = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item).toString();
+				ItemStack st = new ItemStack(item);
+				String name = st.getHoverName().getString();
+				if (!matches(q, name, id)) continue;
+				out.add(new Option<>(id, Component.literal(name), null, st,
+						List.of(Component.literal(name), Component.translatable("cosmeticstudio.gui.look_vanilla").withStyle(ChatFormatting.GRAY)), true, null));
+			}
+		}
 		return out;
 	}
 
@@ -389,7 +452,15 @@ public final class CosmeticScreen extends Screen {
 			return;
 		}
 		String current = selectedValue();
-		if (option.value().equals(current)) {
+		ArmorSlot pickSlot = target.armor();
+		String realRune = pickSlot == null ? null : SkyBlockItems.realRuneId(wornStack(pickSlot));
+		if (tab == Tab.RUNES && pickSlot != null && option.value().equals(realRune) && working.get(pickSlot).rune() == null) {
+			// Toggle the rune that's really on the item: deselect = hide it, select again = show it.
+			ArmorCosmetic c = working.get(pickSlot);
+			boolean hide = !c.hideRealRune();
+			working.armor.put(pickSlot, c.withHideRealRune(hide));
+			setStatus(Component.translatable(hide ? "cosmeticstudio.gui.real_rune_hidden" : "cosmeticstudio.gui.real_rune_shown"), 0xFFFFAA00);
+		} else if (option.value().equals(current)) {
 			// Clicking the selected entry again removes it.
 			clearValue();
 			setStatus(Component.translatable("cosmeticstudio.gui.removed", option.label()), 0xFFAAAAAA);
@@ -408,8 +479,13 @@ public final class CosmeticScreen extends Screen {
 			case DYES -> { if (slot != null) look.armor.put(slot, look.get(slot).withDye(value)); }
 			case RUNES -> {
 				RuneDef r = CatalogManager.get().rune(value);
-				if (slot != null && r != null) look.armor.put(slot, look.get(slot).withRune(value, Math.min(runeLevel, r.maxLevel())));
+				if (slot != null && r != null) {
+					// A new cosmetic rune replaces the real one on this piece, so they don't mix.
+					boolean hasReal = SkyBlockItems.realRuneId(wornStack(slot)) != null;
+					look.armor.put(slot, look.get(slot).withRune(value, Math.min(runeLevel, r.maxLevel())).withHideRealRune(hasReal || look.get(slot).hideRealRune()));
+				}
 			}
+			case LOOKS -> { if (slot != null) look.armor.put(slot, look.get(slot).withLook(value)); }
 			case BLOCKS -> { look.pet.kind = PetCosmetic.Kind.BLOCK; look.pet.id = value; }
 			case ANIMALS -> { look.pet.kind = PetCosmetic.Kind.ENTITY; look.pet.id = value; }
 			default -> {}
@@ -420,7 +496,8 @@ public final class CosmeticScreen extends Screen {
 		ArmorSlot slot = target.armor();
 		switch (tab) {
 			case DYES -> { if (slot != null) working.armor.put(slot, working.get(slot).withDye(null)); }
-			case RUNES -> { if (slot != null) working.armor.put(slot, working.get(slot).withRune(null, 0)); }
+			case RUNES -> { if (slot != null) working.armor.put(slot, working.get(slot).withRune(null, 0).withHideRealRune(false)); }
+			case LOOKS -> { if (slot != null) working.armor.put(slot, working.get(slot).withLook(null)); }
 			case BLOCKS, ANIMALS -> { working.pet.kind = PetCosmetic.Kind.NONE; working.pet.id = null; }
 			default -> {}
 		}
@@ -440,6 +517,16 @@ public final class CosmeticScreen extends Screen {
 			else if (worn.isEmpty()) setStatus(Component.translatable("cosmeticstudio.gui.empty_slot"), 0xFFAAAAAA);
 		}
 		rebuildWidgets();
+	}
+
+	/** The entry currently shown as selected in the list (tests/debug). */
+	public @Nullable String selectedForTests() {
+		return selectedValue();
+	}
+
+	/** Selects a tab by name (DYES, RUNES, LOOKS, …); used by tests. */
+	public void selectTabForTests(String name) {
+		selectTab(Tab.valueOf(name.toUpperCase(Locale.ROOT)));
 	}
 
 	/** Selects a slot by name (HELMET, CHESTPLATE, LEGGINGS, BOOTS, PET); used by keyboard shortcuts and tests. */

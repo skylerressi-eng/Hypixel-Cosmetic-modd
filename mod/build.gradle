@@ -54,7 +54,7 @@ loom.runs.configureEach {
 processResources {
 	// Bundle the generated catalog (see generator/generate.py) into the jar.
 	from(rootProject.file('catalog')) {
-		include 'cosmetics.json', 'rune_effects.json'
+		include 'cosmetics.json', 'rune_effects.json', 'appearances.json'
 		into 'assets/cosmeticstudio/catalog'
 	}
 	def props = [version: project.version, minecraft_dependency: project.minecraft_dependency]

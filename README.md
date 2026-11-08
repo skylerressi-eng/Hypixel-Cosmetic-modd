@@ -32,6 +32,12 @@ Configure button). These links always point to the newest build.
 - Clear messages instead of silent failures: non-leather pieces show "isn't dyeable", runes on the wrong
   slot explain how to allow them, unverified rune effects say so.
 
+### Looks (change any armor piece's appearance)
+- New **Looks** tab: make any piece look like **any SkyBlock armor piece** (all 834 helmets/chestplates/leggings/
+  boots from Hypixel's item data, drawn with their real head texture or leather colour) or **any vanilla wearable**
+  (helmets, carved pumpkin, mob heads, …, read from the item registry). Search, sort A–Z / rarity, filter
+  SkyBlock / Vanilla. Your real item is never changed; it's render-only. Dyes still apply on top of leather looks.
+
 ### Dyes
 - Recolours leather-based armor **when worn and as item icons** (inventory, hotbar, GUI). Same rule as
   SkyBlock: only dyeable (leather) pieces change.
@@ -43,6 +49,8 @@ Configure button). These links always point to the newest build.
 - Follows the vanilla **Particles** video setting, plus an on/off switch, a density slider and
   "Off in Dungeons / Kuudra" switches.
 - "Any rune on any piece" config toggle (off = SkyBlock's slot rules).
+- Runes really on your items show as **pre-selected** ("Rainbow Rune III (on your item)"). Click to deselect
+  (hides it), click again to bring it back; picking a different rune for that piece hides the real one automatically.
 - **Hide real runes**: hides the particles of runes really applied to your SkyBlock items (shown per piece in the
   Runes tab), on your screen only, so they don't mix with your cosmetic runes. It hides incoming server particles
   right around you while you wear/hold a runed item; nothing is sent to the server.
@@ -164,4 +172,4 @@ Per-version values are in `versions/<mc>.properties`; the few APIs that differ b
 | `skyblock` | Read-only location detection, item UUIDs, real-pet hiding |
 | `gui`, `config` | `/cosmetic` screen, widgets, settings screen, Mod Menu |
 | `sync` | Sync client + remote cache |
-| `mixin` | 4 small mixins: armor dye colour, item icon dye colour, skip rendering hidden pet stands, skip displaying real-rune particles |
+| `mixin` | 5 small mixins: armor looks (render state only), armor dye colour, item icon dye colour, skip rendering hidden pet stands, skip displaying real-rune particles |

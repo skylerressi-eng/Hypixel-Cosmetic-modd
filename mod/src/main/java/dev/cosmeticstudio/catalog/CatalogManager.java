@@ -26,6 +26,13 @@ import org.jspecify.annotations.Nullable;
 public final class CatalogManager {
 	private static final String BUNDLED_COSMETICS = "/assets/cosmeticstudio/catalog/cosmetics.json";
 	private static final String BUNDLED_EFFECTS = "/assets/cosmeticstudio/catalog/rune_effects.json";
+	private static final String BUNDLED_APPEARANCES = "/assets/cosmeticstudio/catalog/appearances.json";
+	private static @Nullable JsonObject appearances;
+
+	private static JsonObject appearances() {
+		if (appearances == null) appearances = readResource(BUNDLED_APPEARANCES);
+		return appearances;
+	}
 
 	private static volatile Catalog current = Catalog.empty();
 
@@ -39,13 +46,13 @@ public final class CatalogManager {
 		JsonObject effects = mergeEffects(readResource(BUNDLED_EFFECTS), cacheDir);
 		Path cached = cacheDir.resolve("catalog-cache.json");
 		try {
-			current = Catalog.parse(readResource(BUNDLED_COSMETICS), effects);
-			if (Files.exists(cached)) current = Catalog.parse(read(cached), effects);
+			current = Catalog.parse(readResource(BUNDLED_COSMETICS), effects, appearances());
+			if (Files.exists(cached)) current = Catalog.parse(read(cached), effects, appearances());
 		} catch (Exception e) {
 			CosmeticStudioClient.LOGGER.warn("Catalog cache unusable, using bundled catalog: {}", e.toString());
 		}
-		CosmeticStudioClient.LOGGER.info("Catalog: {} dyes, {} runes, {} rune effects", current.dyes().size(), current.runes().size(),
-				current.effects().size());
+		CosmeticStudioClient.LOGGER.info("Catalog: {} dyes, {} runes, {} rune effects, {} armor looks", current.dyes().size(), current.runes().size(),
+				current.effects().size(), current.appearances().size());
 	}
 
 	/** Lets users add/override rune effects locally in config/cosmeticstudio/rune_effects.json. */
@@ -73,7 +80,7 @@ public final class CatalogManager {
 				return;
 			}
 			JsonObject json = JsonParser.parseString(resp.body()).getAsJsonObject();
-			Catalog fresh = Catalog.parse(json, mergeEffects(readResource(BUNDLED_EFFECTS), cacheDir)); // validates before caching
+			Catalog fresh = Catalog.parse(json, mergeEffects(readResource(BUNDLED_EFFECTS), cacheDir), appearances()); // validates before caching
 			if (fresh.contentHash().equals(current.contentHash())) return;
 			try {
 				Files.createDirectories(cacheDir);

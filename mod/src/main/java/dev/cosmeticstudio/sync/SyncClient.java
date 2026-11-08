@@ -252,11 +252,12 @@ public final class SyncClient {
 		JsonObject armor = new JsonObject();
 		for (Map.Entry<ArmorSlot, ArmorCosmetic> e : look.armor.entrySet()) {
 			ArmorCosmetic c = e.getValue();
-			if (c.isEmpty()) continue;
+			if (c.dye() == null && c.rune() == null && c.look() == null) continue; // hideRealRune is local-only
 			JsonObject o = new JsonObject();
 			o.addProperty("dye", c.dye());
 			o.addProperty("rune", c.rune());
 			o.addProperty("runeLevel", c.runeLevel());
+			if (c.look() != null) o.addProperty("look", c.look());
 			armor.add(e.getKey().name(), o);
 		}
 		root.add("armor", armor);
@@ -285,7 +286,7 @@ public final class SyncClient {
 		for (ArmorSlot s : ArmorSlot.values()) {
 			if (!armor.has(s.name()) || !armor.get(s.name()).isJsonObject()) continue;
 			JsonObject c = armor.getAsJsonObject(s.name());
-			look.armor.put(s, new ArmorCosmetic(str(c, "dye"), str(c, "rune"), c.has("runeLevel") ? c.get("runeLevel").getAsInt() : 0));
+			look.armor.put(s, new ArmorCosmetic(str(c, "dye"), str(c, "rune"), c.has("runeLevel") ? c.get("runeLevel").getAsInt() : 0, str(c, "look"), false));
 		}
 		PetCosmetic pet = new PetCosmetic();
 		if (o.has("pet") && o.get("pet").isJsonObject()) {

@@ -38,8 +38,8 @@ def client_jar(version: str) -> bytes:
     return fetch(meta["downloads"]["client"]["url"])
 
 
-def ids_from_jar(data: bytes) -> tuple[set[str], set[str]]:
-    blocks, entities = set(), set()
+def ids_from_jar(data: bytes) -> tuple[set[str], set[str], set[str]]:
+    blocks, entities, items = set(), set(), set()
     with zipfile.ZipFile(io.BytesIO(data)) as z:
         for name in z.namelist():
             m = re.fullmatch(r"assets/minecraft/blockstates/([a-z0-9_]+)\.json", name)
@@ -47,11 +47,13 @@ def ids_from_jar(data: bytes) -> tuple[set[str], set[str]]:
                 blocks.add("minecraft:" + m.group(1))
         lang = json.loads(z.read("assets/minecraft/lang/en_us.json"))
         for key in lang:
+            if key.startswith("item.minecraft.") and ID.match(key[len("item.minecraft."):]):
+                items.add("minecraft:" + key[len("item.minecraft."):])
             if key.startswith("entity.minecraft."):
                 rest = key[len("entity.minecraft."):]
                 if ID.match(rest):
                     entities.add("minecraft:" + rest)
-    return blocks, entities
+    return blocks, entities, items | blocks
 
 
 def main() -> None:
@@ -67,12 +69,14 @@ def main() -> None:
             sources.append((version, client_jar(version)))
     blocks: set[str] = set()
     entities: set[str] = set()
+    items: set[str] = set()
     for label, data in sources:
-        b, e = ids_from_jar(data)
-        print(f"{label}: {len(b)} blocks, {len(e)} entities")
+        b, e, i = ids_from_jar(data)
+        print(f"{label}: {len(b)} blocks, {len(e)} entities, {len(i)} items")
         blocks |= b
         entities |= e
-    OUT.write_text(json.dumps({"blocks": sorted(blocks), "entities": sorted(entities)}, indent=1) + "\n")
+        items |= i
+    OUT.write_text(json.dumps({"blocks": sorted(blocks), "entities": sorted(entities), "items": sorted(items)}, indent=1) + "\n")
     print(f"wrote {OUT.relative_to(ROOT)}: {len(blocks)} blocks, {len(entities)} entities")
 
 

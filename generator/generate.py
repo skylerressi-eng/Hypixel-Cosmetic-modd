@@ -184,6 +184,60 @@ def build_runes(neu: Path, missing: list[str]) -> list[dict]:
     return out
 
 
+# Legacy (1.8) Hypixel material names -> modern item ids, for armor appearances.
+LEGACY_MATERIALS = {
+    "LEATHER_HELMET": "minecraft:leather_helmet", "LEATHER_CHESTPLATE": "minecraft:leather_chestplate",
+    "LEATHER_LEGGINGS": "minecraft:leather_leggings", "LEATHER_BOOTS": "minecraft:leather_boots",
+    "IRON_HELMET": "minecraft:iron_helmet", "IRON_CHESTPLATE": "minecraft:iron_chestplate",
+    "IRON_LEGGINGS": "minecraft:iron_leggings", "IRON_BOOTS": "minecraft:iron_boots",
+    "GOLD_HELMET": "minecraft:golden_helmet", "GOLD_CHESTPLATE": "minecraft:golden_chestplate",
+    "GOLD_LEGGINGS": "minecraft:golden_leggings", "GOLD_BOOTS": "minecraft:golden_boots",
+    "DIAMOND_HELMET": "minecraft:diamond_helmet", "DIAMOND_CHESTPLATE": "minecraft:diamond_chestplate",
+    "DIAMOND_LEGGINGS": "minecraft:diamond_leggings", "DIAMOND_BOOTS": "minecraft:diamond_boots",
+    "CHAINMAIL_HELMET": "minecraft:chainmail_helmet", "CHAINMAIL_CHESTPLATE": "minecraft:chainmail_chestplate",
+    "CHAINMAIL_LEGGINGS": "minecraft:chainmail_leggings", "CHAINMAIL_BOOTS": "minecraft:chainmail_boots",
+    "SEA_LANTERN": "minecraft:sea_lantern", "SPONGE": "minecraft:sponge", "PACKED_ICE": "minecraft:packed_ice",
+    "HAY_BLOCK": "minecraft:hay_block", "LEAVES": "minecraft:oak_leaves",
+}
+LEGACY_RED = {"CARPET": "minecraft:red_carpet", "STAINED_CLAY": "minecraft:red_terracotta", "STAINED_GLASS": "minecraft:red_stained_glass"}
+SKULLS = {0: "minecraft:skeleton_skull", 1: "minecraft:wither_skeleton_skull", 2: "minecraft:zombie_head", 3: "minecraft:player_head", 4: "minecraft:creeper_head"}
+
+
+def build_appearances(hypixel: dict | None, missing: list[str]) -> list[dict]:
+    """Every SkyBlock armor piece's look (material + leather colour or skull texture), from Hypixel's item list."""
+    out = []
+    if not hypixel:
+        missing.append("- Armor appearances: Hypixel items endpoint unavailable; appearances.json not updated.")
+        return out
+    for item in hypixel.get("items", []):
+        slot = item.get("category")
+        if slot not in ("HELMET", "CHESTPLATE", "LEGGINGS", "BOOTS"):
+            continue
+        mat, dur = item.get("material"), item.get("durability", 0)
+        if mat == "SKULL_ITEM":
+            model = SKULLS.get(dur or 0)
+        elif mat in LEGACY_RED and dur == 14:
+            model = LEGACY_RED[mat]
+        else:
+            model = LEGACY_MATERIALS.get(mat)
+        if model is None:
+            missing.append(f"- **{item['id']}**: unknown armor material `{mat}:{dur}`; not offered as an appearance.")
+            continue
+        entry = {"id": item["id"], "name": item.get("name", item["id"]), "slot": slot, "rarity": item.get("tier"), "item": model}
+        if "color" in item:
+            r, g, b = (int(x) for x in str(item["color"]).split(","))
+            entry["color"] = f"#{r:02X}{g:02X}{b:02X}"
+        skin = item.get("skin")
+        if model == "minecraft:player_head":
+            if isinstance(skin, dict) and skin.get("value"):
+                entry["texture"] = skin["value"]
+            else:
+                missing.append(f"- **{item['id']}**: player-head helmet without a texture in Hypixel's data.")
+        out.append(entry)
+    out.sort(key=lambda e: (e["slot"], e["name"]))
+    return out
+
+
 def write_missing(missing: list[str], dyes: list[dict], runes: list[dict]) -> None:
     animated = [d for d in dyes if d["animated"]]
     lines = [
@@ -232,6 +286,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--neu", type=Path, help="existing NotEnoughUpdates-REPO checkout")
     ap.add_argument("--offline", action="store_true", help="skip Hypixel cross-check")
+    ap.add_argument("--hypixel-file", type=Path, help="use a saved copy of the Hypixel items response")
     args = ap.parse_args()
 
     neu, commit = ensure_neu(args.neu)
@@ -239,7 +294,7 @@ def main() -> int:
     dyes = build_dyes(neu, missing)
     runes = build_runes(neu, missing)
 
-    hypixel = load_hypixel(args.offline)
+    hypixel = load_hypixel(args.offline) if not args.hypixel_file else json.loads(args.hypixel_file.read_text())
     hypixel_note = None
     if hypixel:
         ids = {i["id"] for i in hypixel.get("items", [])}
@@ -264,9 +319,15 @@ def main() -> int:
     digest_src = json.dumps({k: v for k, v in body.items() if k != "generatedAt"}, sort_keys=True).encode()
     body["contentHash"] = hashlib.sha256(digest_src).hexdigest()
 
+    appearances = build_appearances(hypixel, missing)
+    if appearances:
+        (ROOT / "catalog" / "appearances.json").write_text(json.dumps({"schemaVersion": 1, "source": "Hypixel /v2/resources/skyblock/items",
+            "appearances": appearances}, indent=1, ensure_ascii=False) + "\n")
+
     CATALOG.parent.mkdir(parents=True, exist_ok=True)
     CATALOG.write_text(json.dumps(body, indent=1, ensure_ascii=False) + "\n")
     write_missing(missing, dyes, runes)
+    print(f"appearances: {len(appearances)}")
     print(f"wrote {CATALOG.relative_to(ROOT)}: {len(dyes)} dyes ({sum(d['animated'] for d in dyes)} animated), "
           f"{len(runes)} runes ({sum(len(r['levels']) for r in runes)} levels); {len(missing)} gaps -> MISSING_DATA.md")
     return 0

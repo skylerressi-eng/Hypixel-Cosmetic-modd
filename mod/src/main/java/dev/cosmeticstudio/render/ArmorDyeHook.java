@@ -22,7 +22,9 @@ public final class ArmorDyeHook {
 		Entity wearer = mc.level.getEntity(avatar.id);
 		ArmorSlot slot = CosmeticResolver.slotOf(stack);
 		if (wearer == null || slot == null) return null;
-		ArmorCosmetic c = CosmeticResolver.worn(wearer, slot, stack);
+		// Look up the cosmetic by the REAL worn item (the drawn stack may be a look override without the item's UUID).
+		ItemStack real = wearer instanceof net.minecraft.world.entity.LivingEntity living ? living.getItemBySlot(slot.vanilla) : stack;
+		ArmorCosmetic c = CosmeticResolver.worn(wearer, slot, real);
 		DyeDef dye = CatalogManager.get().dye(c.dye());
 		return dye == null ? null : dye.colorAt(CosmeticResolver.clock());
 	}

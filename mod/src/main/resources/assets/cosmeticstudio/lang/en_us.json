@@ -103,7 +103,14 @@
 	"cosmeticstudio.gui.remove_all_runes": "Remove all my runes",
 	"cosmeticstudio.gui.remove_all_runes_tip": "Removes every cosmetic rune you picked in this mod, on every item and slot. Dyes and your pet stay.",
 	"cosmeticstudio.gui.runes_removed": "All cosmetic runes removed",
-	"cosmeticstudio.gui.real_rune": "Real rune on this piece: %s (use \"Hide real runes\")",
+	"cosmeticstudio.gui.real_rune": "Real rune: %s — it's pre-selected; click it to deselect",
 	"cosmeticstudio.config.hide_real_runes": "Hide my real runes",
-	"cosmeticstudio.config.hide_real_runes.tip": "Hides particles from the runes really applied to your SkyBlock items (on your screen only), so only your cosmetic runes show."
+	"cosmeticstudio.config.hide_real_runes.tip": "Hides particles from the runes really applied to your SkyBlock items (on your screen only), so only your cosmetic runes show.",
+	"cosmeticstudio.tab.looks": "Looks",
+	"cosmeticstudio.gui.look_sb": "SkyBlock armor look",
+	"cosmeticstudio.gui.look_vanilla": "Vanilla item",
+	"cosmeticstudio.gui.on_your_item": "  (on your item)",
+	"cosmeticstudio.gui.real_rune_tip": "This rune is really on your item. Click to deselect (hide) it; click again to bring it back. Picking another rune hides it automatically.",
+	"cosmeticstudio.gui.real_rune_hidden": "Real rune deselected — it's hidden on your screen",
+	"cosmeticstudio.gui.real_rune_shown": "Real rune selected again — it shows normally"
 }

@@ -18,16 +18,25 @@ public final class Catalog {
 	private final Map<String, DyeDef> dyes;
 	private final Map<String, RuneDef> runes;
 	private final Map<String, RuneEffect> effects;
+	private final Map<String, AppearanceDef> appearances;
 
-	private Catalog(String contentHash, Map<String, DyeDef> dyes, Map<String, RuneDef> runes, Map<String, RuneEffect> effects) {
+	private Catalog(String contentHash, Map<String, DyeDef> dyes, Map<String, RuneDef> runes, Map<String, RuneEffect> effects,
+			Map<String, AppearanceDef> appearances) {
 		this.contentHash = contentHash;
 		this.dyes = Collections.unmodifiableMap(dyes);
 		this.runes = Collections.unmodifiableMap(runes);
 		this.effects = Collections.unmodifiableMap(effects);
+		this.appearances = Collections.unmodifiableMap(appearances);
 	}
 
 	public static Catalog empty() {
-		return new Catalog("", Map.of(), Map.of(), Map.of());
+		return new Catalog("", Map.of(), Map.of(), Map.of(), Map.of());
+	}
+
+	/** SkyBlock armor looks keyed by Hypixel item id (without the "sb:" prefix). */
+	public Map<String, AppearanceDef> appearances() { return appearances; }
+	public @Nullable AppearanceDef appearance(@Nullable String id) {
+		return id == null ? null : appearances.get(id.startsWith(AppearanceDef.PREFIX) ? id.substring(AppearanceDef.PREFIX.length()) : id);
 	}
 
 	public String contentHash() { return contentHash; }
@@ -40,6 +49,10 @@ public final class Catalog {
 
 	/** Parses cosmetics.json plus (optional) rune_effects.json. Throws on schema mismatch so callers can fall back. */
 	public static Catalog parse(JsonObject cosmetics, @Nullable JsonObject runeEffects) {
+		return parse(cosmetics, runeEffects, null);
+	}
+
+	public static Catalog parse(JsonObject cosmetics, @Nullable JsonObject runeEffects, @Nullable JsonObject appearancesJson) {
 		int schema = cosmetics.get("schemaVersion").getAsInt();
 		if (schema != SCHEMA_VERSION) throw new IllegalArgumentException("Unsupported catalog schema " + schema);
 
@@ -88,7 +101,15 @@ public final class Catalog {
 						o.has("source") ? str(o, "source") : "unknown", List.copyOf(emitters)));
 			}
 		}
-		return new Catalog(cosmetics.has("contentHash") ? str(cosmetics, "contentHash") : "", dyes, runes, effects);
+		Map<String, AppearanceDef> appearances = new LinkedHashMap<>();
+		if (appearancesJson != null && appearancesJson.has("appearances")) {
+			for (JsonElement e : appearancesJson.getAsJsonArray("appearances")) {
+				JsonObject o = e.getAsJsonObject();
+				appearances.put(str(o, "id"), new AppearanceDef(str(o, "id"), str(o, "name"), str(o, "slot"), opt(o, "rarity"), str(o, "item"),
+						o.has("color") ? hex(str(o, "color")) : null, opt(o, "texture")));
+			}
+		}
+		return new Catalog(cosmetics.has("contentHash") ? str(cosmetics, "contentHash") : "", dyes, runes, effects, appearances);
 	}
 
 	private static String str(JsonObject o, String k) {
