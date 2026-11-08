@@ -1,6 +1,7 @@
 package dev.cosmeticstudio;
 
 import dev.cosmeticstudio.compat.Compat;
+import dev.cosmeticstudio.config.ConfigScreen;
 import dev.cosmeticstudio.gui.CosmeticScreen;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
@@ -22,7 +23,13 @@ public final class CosmeticCommand {
 
 	public static void register(String version) {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) ->
-				dispatcher.register(ClientCommands.literal("cosmetic").executes(ctx -> {
+				dispatcher.register(ClientCommands.literal("cosmetic")
+						.then(ClientCommands.literal("config").executes(ctx -> {
+							Minecraft mc = ctx.getSource().getClient();
+							mc.schedule(() -> Compat.setScreen(new ConfigScreen(null)));
+							return 1;
+						}))
+						.executes(ctx -> {
 					invocations++;
 					// Open on the next tick: the chat screen is still closing while the command runs.
 					Minecraft mc = ctx.getSource().getClient();

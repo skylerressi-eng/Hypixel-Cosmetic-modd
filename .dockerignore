@@ -1,0 +1,8 @@
+node_modules
+server/node_modules
+server/dist
+server/data
+mod/build
+.gradle
+.git
+**/build

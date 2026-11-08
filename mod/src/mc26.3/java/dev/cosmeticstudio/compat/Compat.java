@@ -34,4 +34,14 @@ public final class Compat {
 		var state = (net.minecraft.world.entity.LivingEntity.SwingState) SWING_STATE.get(e);
 		return state != null && state.isSwinging();
 	}
+
+	public static net.minecraft.client.Camera mainCamera() {
+		return Minecraft.getInstance().gameRenderer.mainCamera();
+	}
+
+	public static void submitNameTag(net.minecraft.client.renderer.SubmitNodeCollector out, com.mojang.blaze3d.vertex.PoseStack ps,
+			net.minecraft.world.phys.Vec3 at, net.minecraft.network.chat.Component name, int light,
+			net.minecraft.client.renderer.state.level.CameraRenderState camera) {
+		out.submitNameTag(ps, at, 0, name, false, light, camera);
+	}
 }

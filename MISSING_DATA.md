@@ -44,80 +44,80 @@ To verify: record a piece wearing the dye and count how long one full cycle take
 No public dataset describes what each rune's particles look like (type, shape, colour, rate). NEU REPO
 only has the in-game description, listed below. Until an entry is added to `catalog/rune_effects.json`
 with `"verified": true`, the mod shows the rune as **effect data missing**. An opt-in config toggle
-("Show unverified approximate rune effects", off by default) can display name-based approximations,
-which are labelled as approximate in the GUI.
+("Show unverified rune effects", off by default) displays the keyword-based approximations from
+`generator/approximate_rune_effects.py`, which are labelled as approximate in the GUI.
 
-| Rune | Slot | In-game description | Verified effect |
-|---|---|---|---|
-| Antlers Rune (`ANTLERS_RUNE`) | Helmet | A set of beautiful antlers adorn your head. Obtained from the Taylor 2025 Winter Bundle. | |
-| Fading Blue Rune (`AXE_FADING_BLUE_RUNE`) | Axe | Your axe fades into beautiful blue particles! | |
-| Fading Green Rune (`AXE_FADING_GREEN_RUNE`) | Axes | Your axe fades into groovy green particles! | |
-| Fading White Rune (`AXE_FADING_WHITE_RUNE`) | Axes | Your axe fades into wonderful white particles! | |
-| Fading Rainbow Rune (`AXE_RAINBOW_RUNE`) | Axes | Your axe fades into every color of the rainbow! Obtained from Fire Sales. | |
-| Barkshatter Rune (`AXE_SHATTER_RUNE`) | Axes | Your axe throws bark all over the place! Obtained from Fire Sales. | |
-| Soul Slice Rune (`AXE_SOUL_SLICE_RUNE`) | Axes | Your axe slices the very threads of this reality. Obtained from Fire Sales. | |
-| Bark Tunes Rune (`BARK_TUNES_RUNE`) | Weapons | Plays aggresive barks when slaying an enemy. Obtained from Fire Sales. | |
-| Bite Rune (`BITE_RUNE`) | Bows |  | |
-| Blazing Sun Rune (`BLAZING_SUN_RUNE`) | Helmet | The Blazing Sun conquers all. | |
-| Blood Rune (`BLOOD_2_RUNE`) | Weapons | Create a blood effect when you kill mobs! | |
-| Blooming Rune (`BLOOMING_RUNE`) | Chestplates | A wonderful circle of flowers consumes you! Obtained from the Taylor Spring Bundle. | |
-| Clouds Rune (`CLOUDS_RUNE`) | Boots | Feels like you're walking in the clouds! | |
-| Couture Rune (`COUTURE_RUNE`) | Boots |  | |
-| Crowned Rune (`CROWNED_RUNE`) | Helmet | Only befit for a ruler of this world. | |
-| Darkness Within Rune (`DARKNESS_WITHIN_RUNE`) | Boots |  | |
-| End Rune (`DRAGON_RUNE`) | Bows |  | |
-| Enchant Rune (`ENCHANT_RUNE`) | Chestplates |  | |
-| Endersnake Rune (`ENDERSNAKE_RUNE`) | Boots |  | |
-| Explosifall Rune (`EXPLOSIFALL_RUNE`) | Weapons | Let the slain be one with nature. Changes color based on the current SkyBlock season. Obtained from the Taylor Fall Bundle. | |
-| Fiery Burst Rune (`FIERY_BURST_RUNE`) | Farming Tools |  | |
-| Fire Spiral Rune (`FIRE_SPIRAL_RUNE`) | Bows | Inferno arrows! | |
-| Flowery Carpet Rune (`FLOWER_CARPET_RUNE`) | Boots | A small piece of nature. Obtained from the Taylor Spring Bundle. | |
-| Flowing Fall Rune (`FLOWING_FALL_RUNE`) | Boots | Let the flowers hit the floor. | |
-| Gem Rune (`GEM_RUNE`) | Bows | Create a gem effect behind your arrows! | |
-| Golden Carpet Rune (`GOLDEN_CARPET_RUNE`) | Boots | A small piece of royalty. Obtained from Fire Sales. | |
-| Golden Rune (`GOLDEN_RUNE`) | Bows | Flaunt your wealth with golden arrows! | |
-| Grand Freezing Rune (`GRAND_FREEZING_RUNE`) | Chestplates | Special look on Jerry's Workshop! | |
-| Grand Gardening Rune (`GRAND_GARDENING_RUNE`) | Chestplates | Special look on Farming Islands & Garden! Obtained from the Taylor Spring Bundle. | |
-| Grand Leaf-ing Rune (`GRAND_LEAFING_RUNE`) | Chestplates | Special Cherry Blossom effect on Foraging Islands! Obtained from the Taylor Fall Bundle. | |
-| Grand Searing Rune (`GRAND_SEARING_RUNE`) | Chestplates | Special look on the Crimson Isle! | |
-| Harmony Rune (`HARMONY_RUNE`) | Chestplates | Less controversial than Stereo Pants. Obtained from Fire Sales. | |
-| Heartsplosion Rune (`HEARTSPLOSION_RUNE`) | Weapons | Explode your enemies... with love. | |
-| Hearts Rune (`HEARTS_RUNE`) | Weapons | Shower your enemies in love! | |
-| Hot Rune (`HOT_RUNE`) | Boots | Your shoes must be burning! | |
-| Ice Rune (`ICE_RUNE`) | Bows | Your arrows are icy cold! | |
-| Ice Skates Rune (`ICE_SKATES_RUNE`) | Boots | Shred that ice! Obtained from the Taylor Winter 2023 Bundle. | |
-| Jerry Rune (`JERRY_RUNE`) | Weapons | It's Jerrys all the way down. | |
-| Lavatears Rune (`LAVATEARS_RUNE`) | Bows |  | |
-| Lava Rune (`LAVA_RUNE`) | Bows | Shoot magma arrows! | |
-| Lightning Rune (`LIGHTNING_RUNE`) | Weapons | Chance to strike lightning on the enemies you defeat! | |
-| Magical Rune (`MAGIC_RUNE`) | Bows | Your arrows have a magical shine! | |
-| Meow Music Rune (`MEOW_MUSIC_RUNE`) | Weapons | Plays captivating meows when slaying an enemy. Obtained from Fire Sales. | |
-| Music Rune (`MUSIC_RUNE`) | Weapons | Put monsters out of their misery with sweet tunes! | |
-| Ornamental Rune (`ORNAMENTAL_RUNE`) | Chestplates | Display wonderful ornaments all around your person! Obtained from Fire Sales. | |
-| Peafowl Rune (`PEAFOWL_RUNE`) | Chestplates | Show off some colorful blue feathers! Obtained from Fire Sales. | |
-| Prancin' Pumpkin Rune (`PRANCING_PUMPKIN_RUNE`) | Chestplates | See those pumpkins twirl! Obtained from Fire Sales. | |
-| Primal Fear Rune (`PRIMAL_FEAR_RUNE`) | Chestplates | What are you scared of? Obtained from Fire Sales. | |
-| Rainbow Carpet Rune (`RAINBOW_CARPET_RUNE`) | Boots | A small piece of a prism. Obtained from Fire Sales. | |
-| Rainbow Rune (`RAINBOW_RUNE`) | Boots | Walkin' on rainbows! | |
-| Rainy Day Rune (`RAINY_DAY_RUNE`) | Helmet | Nothin' like a rainy summer day. Lightning included. Obtained from the Taylor 2024 Summer Bundle. | |
-| Redstone Rune (`REDSTONE_RUNE`) | Boots | Walk like an engineer! | |
-| Slimy Rune (`SLIMY_RUNE`) | Bows | A squishy trail to follow your arrows! | |
-| Smitten Rune (`SMITTEN_RUNE`) | Helmet | Do you want to be my lover? | |
-| Smokey Rune (`SMOKEY_RUNE`) | Bows | Creates a burnt trail behind your arrows! | |
-| Snake Rune (`SNAKE_RUNE`) | Boots |  | |
-| Snow Rune (`SNOW_RUNE`) | Weapons | Freeze monsters to death! | |
-| Soultwist Rune (`SOULTWIST_RUNE`) | Weapons |  | |
-| Sparkling Rune (`SPARKLING_RUNE`) | Boots | Your shoes are sparkling! | |
-| Spellbound Rune (`SPELLBOUND_RUNE`) | Helmet | Creates a captivating Enchanting Halo! Obtained from Fire Sales. | |
-| Spirit Rune (`SPIRIT_RUNE`) | Weapons |  | |
-| Sunny Spiral Rune (`SUNNY_SPIRAL_RUNE`) | Chestplates | The heat of the sun orbits you! | |
-| Super Pumpkin Rune (`SUPER_PUMPKIN_RUNE`) | Chestplates | YEAH BABY? GIANT PUMPKIN? WOOOOOOO!!! Obtained from the Taylor Fall 2024 Bundle. | |
-| Tidal Rune (`TIDAL_RUNE`) | Boots |  | |
-| Turkey Rune (`TURKEY_RUNE`) | Chestplates | Show off some gobbly brown feathers! Obtained from Fire Sales. | |
-| Wake Rune (`WAKE_RUNE`) | Bows | Your arrows are calming waves! | |
-| White Spiral Rune (`WHITE_SPIRAL_RUNE`) | Bows | Show your elegance with white spiraling arrows! | |
-| Zap Rune (`ZAP_RUNE`) | Boots | Zap across the lands! | |
-| Pestilence Rune (`ZOMBIE_SLAYER_RUNE`) | Weapons |  | |
+| Rune | Slot | In-game description | Current approximation (unverified) | Verified effect |
+|---|---|---|---|---|
+| Antlers Rune (`ANTLERS_RUNE`) | Helmet | A set of beautiful antlers adorn your head. Obtained from the Taylor 2025 Winter Bundle. | none | |
+| Fading Blue Rune (`AXE_FADING_BLUE_RUNE`) | Axe | Your axe fades into beautiful blue particles! | dust #3C78FF, burst, attack | |
+| Fading Green Rune (`AXE_FADING_GREEN_RUNE`) | Axes | Your axe fades into groovy green particles! | dust #3CFF5A, burst, attack | |
+| Fading White Rune (`AXE_FADING_WHITE_RUNE`) | Axes | Your axe fades into wonderful white particles! | dust #FFFFFF, burst, attack | |
+| Fading Rainbow Rune (`AXE_RAINBOW_RUNE`) | Axes | Your axe fades into every color of the rainbow! Obtained from Fire Sales. | dust rainbow, burst, attack | |
+| Barkshatter Rune (`AXE_SHATTER_RUNE`) | Axes | Your axe throws bark all over the place! Obtained from Fire Sales. | none | |
+| Soul Slice Rune (`AXE_SOUL_SLICE_RUNE`) | Axes | Your axe slices the very threads of this reality. Obtained from Fire Sales. | soul, burst, attack | |
+| Bark Tunes Rune (`BARK_TUNES_RUNE`) | Weapons | Plays aggresive barks when slaying an enemy. Obtained from Fire Sales. | note, burst, attack | |
+| Bite Rune (`BITE_RUNE`) | Bows |  | none | |
+| Blazing Sun Rune (`BLAZING_SUN_RUNE`) | Helmet | The Blazing Sun conquers all. | flame, point, ambient | |
+| Blood Rune (`BLOOD_2_RUNE`) | Weapons | Create a blood effect when you kill mobs! | dust #8A0303, burst, attack | |
+| Blooming Rune (`BLOOMING_RUNE`) | Chestplates | A wonderful circle of flowers consumes you! Obtained from the Taylor Spring Bundle. | cherry_leaves, ring, ambient | |
+| Clouds Rune (`CLOUDS_RUNE`) | Boots | Feels like you're walking in the clouds! | cloud, trail, walk | |
+| Couture Rune (`COUTURE_RUNE`) | Boots |  | none | |
+| Crowned Rune (`CROWNED_RUNE`) | Helmet | Only befit for a ruler of this world. | none | |
+| Darkness Within Rune (`DARKNESS_WITHIN_RUNE`) | Boots |  | large_smoke, trail, walk | |
+| End Rune (`DRAGON_RUNE`) | Bows |  | reverse_portal, burst, attack | |
+| Enchant Rune (`ENCHANT_RUNE`) | Chestplates |  | enchant, ring, ambient | |
+| Endersnake Rune (`ENDERSNAKE_RUNE`) | Boots |  | reverse_portal, trail, walk | |
+| Explosifall Rune (`EXPLOSIFALL_RUNE`) | Weapons | Let the slain be one with nature. Changes color based on the current SkyBlock season. Obtained from the Taylor Fall Bundle. | poof, burst, attack | |
+| Fiery Burst Rune (`FIERY_BURST_RUNE`) | Farming Tools |  | flame, burst, attack | |
+| Fire Spiral Rune (`FIRE_SPIRAL_RUNE`) | Bows | Inferno arrows! | flame, spiral, attack | |
+| Flowery Carpet Rune (`FLOWER_CARPET_RUNE`) | Boots | A small piece of nature. Obtained from the Taylor Spring Bundle. | cherry_leaves, trail, walk | |
+| Flowing Fall Rune (`FLOWING_FALL_RUNE`) | Boots | Let the flowers hit the floor. | cherry_leaves, trail, walk | |
+| Gem Rune (`GEM_RUNE`) | Bows | Create a gem effect behind your arrows! | end_rod, burst, attack | |
+| Golden Carpet Rune (`GOLDEN_CARPET_RUNE`) | Boots | A small piece of royalty. Obtained from Fire Sales. | dust #FFD700, trail, walk | |
+| Golden Rune (`GOLDEN_RUNE`) | Bows | Flaunt your wealth with golden arrows! | dust #FFD700, burst, attack | |
+| Grand Freezing Rune (`GRAND_FREEZING_RUNE`) | Chestplates | Special look on Jerry's Workshop! | snowflake, ring, ambient | |
+| Grand Gardening Rune (`GRAND_GARDENING_RUNE`) | Chestplates | Special look on Farming Islands & Garden! Obtained from the Taylor Spring Bundle. | cherry_leaves, ring, ambient | |
+| Grand Leaf-ing Rune (`GRAND_LEAFING_RUNE`) | Chestplates | Special Cherry Blossom effect on Foraging Islands! Obtained from the Taylor Fall Bundle. | cherry_leaves, ring, ambient | |
+| Grand Searing Rune (`GRAND_SEARING_RUNE`) | Chestplates | Special look on the Crimson Isle! | flame, ring, ambient | |
+| Harmony Rune (`HARMONY_RUNE`) | Chestplates | Less controversial than Stereo Pants. Obtained from Fire Sales. | none | |
+| Heartsplosion Rune (`HEARTSPLOSION_RUNE`) | Weapons | Explode your enemies... with love. | heart, burst, attack | |
+| Hearts Rune (`HEARTS_RUNE`) | Weapons | Shower your enemies in love! | heart, burst, attack | |
+| Hot Rune (`HOT_RUNE`) | Boots | Your shoes must be burning! | none | |
+| Ice Rune (`ICE_RUNE`) | Bows | Your arrows are icy cold! | snowflake, burst, attack | |
+| Ice Skates Rune (`ICE_SKATES_RUNE`) | Boots | Shred that ice! Obtained from the Taylor Winter 2023 Bundle. | snowflake, trail, walk | |
+| Jerry Rune (`JERRY_RUNE`) | Weapons | It's Jerrys all the way down. | happy_villager, burst, attack | |
+| Lavatears Rune (`LAVATEARS_RUNE`) | Bows |  | dripping_lava, burst, attack | |
+| Lava Rune (`LAVA_RUNE`) | Bows | Shoot magma arrows! | flame, burst, attack | |
+| Lightning Rune (`LIGHTNING_RUNE`) | Weapons | Chance to strike lightning on the enemies you defeat! | electric_spark, burst, attack | |
+| Magical Rune (`MAGIC_RUNE`) | Bows | Your arrows have a magical shine! | witch, burst, attack | |
+| Meow Music Rune (`MEOW_MUSIC_RUNE`) | Weapons | Plays captivating meows when slaying an enemy. Obtained from Fire Sales. | note, burst, attack | |
+| Music Rune (`MUSIC_RUNE`) | Weapons | Put monsters out of their misery with sweet tunes! | note, burst, attack | |
+| Ornamental Rune (`ORNAMENTAL_RUNE`) | Chestplates | Display wonderful ornaments all around your person! Obtained from Fire Sales. | cherry_leaves, ring, ambient | |
+| Peafowl Rune (`PEAFOWL_RUNE`) | Chestplates | Show off some colorful blue feathers! Obtained from Fire Sales. | cherry_leaves, ring, ambient | |
+| Prancin' Pumpkin Rune (`PRANCING_PUMPKIN_RUNE`) | Chestplates | See those pumpkins twirl! Obtained from Fire Sales. | dust #FF8C00, ring, ambient | |
+| Primal Fear Rune (`PRIMAL_FEAR_RUNE`) | Chestplates | What are you scared of? Obtained from Fire Sales. | none | |
+| Rainbow Carpet Rune (`RAINBOW_CARPET_RUNE`) | Boots | A small piece of a prism. Obtained from Fire Sales. | dust rainbow, trail, walk | |
+| Rainbow Rune (`RAINBOW_RUNE`) | Boots | Walkin' on rainbows! | dust rainbow, trail, walk | |
+| Rainy Day Rune (`RAINY_DAY_RUNE`) | Helmet | Nothin' like a rainy summer day. Lightning included. Obtained from the Taylor 2024 Summer Bundle. | falling_water, rain, ambient | |
+| Redstone Rune (`REDSTONE_RUNE`) | Boots | Walk like an engineer! | dust #FF0000, trail, walk | |
+| Slimy Rune (`SLIMY_RUNE`) | Bows | A squishy trail to follow your arrows! | item_slime, burst, attack | |
+| Smitten Rune (`SMITTEN_RUNE`) | Helmet | Do you want to be my lover? | heart, point, ambient | |
+| Smokey Rune (`SMOKEY_RUNE`) | Bows | Creates a burnt trail behind your arrows! | large_smoke, burst, attack | |
+| Snake Rune (`SNAKE_RUNE`) | Boots |  | none | |
+| Snow Rune (`SNOW_RUNE`) | Weapons | Freeze monsters to death! | snowflake, burst, attack | |
+| Soultwist Rune (`SOULTWIST_RUNE`) | Weapons |  | soul, burst, attack | |
+| Sparkling Rune (`SPARKLING_RUNE`) | Boots | Your shoes are sparkling! | end_rod, trail, walk | |
+| Spellbound Rune (`SPELLBOUND_RUNE`) | Helmet | Creates a captivating Enchanting Halo! Obtained from Fire Sales. | enchant, point, ambient | |
+| Spirit Rune (`SPIRIT_RUNE`) | Weapons |  | soul, burst, attack | |
+| Sunny Spiral Rune (`SUNNY_SPIRAL_RUNE`) | Chestplates | The heat of the sun orbits you! | flame, spiral, ambient | |
+| Super Pumpkin Rune (`SUPER_PUMPKIN_RUNE`) | Chestplates | YEAH BABY? GIANT PUMPKIN? WOOOOOOO!!! Obtained from the Taylor Fall 2024 Bundle. | dust #FF8C00, ring, ambient | |
+| Tidal Rune (`TIDAL_RUNE`) | Boots |  | splash, trail, walk | |
+| Turkey Rune (`TURKEY_RUNE`) | Chestplates | Show off some gobbly brown feathers! Obtained from Fire Sales. | none | |
+| Wake Rune (`WAKE_RUNE`) | Bows | Your arrows are calming waves! | splash, burst, attack | |
+| White Spiral Rune (`WHITE_SPIRAL_RUNE`) | Bows | Show your elegance with white spiraling arrows! | dust #FFFFFF, spiral, attack | |
+| Zap Rune (`ZAP_RUNE`) | Boots | Zap across the lands! | electric_spark, trail, walk | |
+| Pestilence Rune (`ZOMBIE_SLAYER_RUNE`) | Weapons |  | none | |
 
 ## Other gaps found while generating
 

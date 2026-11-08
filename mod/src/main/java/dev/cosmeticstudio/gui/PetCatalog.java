@@ -66,7 +66,6 @@ public final class PetCatalog {
 
 	public static boolean isLivingMob(EntityType<?> type) {
 		return LIVING.computeIfAbsent(type, t -> {
-			if (t == net.minecraft.world.entity.EntityTypes.PLAYER) return false;
 			var level = Minecraft.getInstance().level;
 			if (level == null) return false;
 			try {

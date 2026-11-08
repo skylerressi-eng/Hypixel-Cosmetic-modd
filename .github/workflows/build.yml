@@ -28,3 +28,22 @@ jobs:
         with:
           name: cosmeticstudio-mc${{ matrix.mc }}
           path: mod/build/libs/*.jar
+  server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm test
+      - run: docker build -f Dockerfile -t cosmetic-studio-sync ..
+  catalog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Catalog files are valid JSON
+        run: for f in catalog/*.json; do python3 -m json.tool "$f" > /dev/null; done

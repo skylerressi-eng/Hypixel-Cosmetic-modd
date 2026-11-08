@@ -1,39 +1,8 @@
 # Cosmetic Studio
 
-A client-side, **purely visual** Fabric mod for Hypixel SkyBlock (Minecraft 26.3): preview and apply every
-SkyBlock dye and rune to your armor, turn your pet into any block or mob, and see other Cosmetic Studio
-users' cosmetics through an optional self-hostable sync server.
-
-> Work in progress. See the milestone table below.
-
-## Safety
-
-- No gameplay advantage, no automation.
-- Never sends chat to, or modifies packets sent to, Hypixel. `/cosmetic` is a client-side command that
-  Fabric handles locally.
-- Sync traffic goes only to the sync server URL you configure, never through Hypixel.
-
-## Repository layout
-
-| Path | Contents |
-|---|---|
-| `mod/` | The Fabric mod (Java 25, Mojang names, Loom) |
-| `generator/` | Script that builds the bundled dye/rune catalog from Hypixel + NEU REPO data |
-| `catalog/` | Catalog schema and generated data shared by the mod and the server |
-| `server/` | Sync server (TypeScript + Fastify + SQLite, Docker) |
-
-## Toolchain (verified 2026-11-08)
-
-| | Version |
-|---|---|
-| Minecraft | 26.3 (also 26.1.2 with Fabric API 0.155.3+26.1.2, Mod Menu 18.0.2) |
-| Fabric Loader | 0.19.5+ (compiled against 0.19.5, tested on 0.19.5) |
-| Fabric API | 0.165.2+26.3 |
-| Fabric Loom | 1.19.4 (`net.fabricmc.fabric-loom`) |
-| Gradle | 9.8.2 (wrapper) |
-| Java | 25 |
-| Mappings | none: 26.x ships unobfuscated (Mojang names) |
-| Mod Menu (optional) | 21.0.0 |
+A client-side, **purely visual** Fabric mod for Hypixel SkyBlock. Preview and apply every SkyBlock dye and rune
+to your armor, turn your pet into any block or mob, and (optionally, through a self-hosted sync server) see other
+Cosmetic Studio users' cosmetics.
 
 ## Download
 
@@ -42,38 +11,144 @@ users' cosmetics through an optional self-hostable sync server.
 | 26.3 | 0.165.2+26.3 | [cosmeticstudio-mc26.3-latest.jar](https://github.com/skylerressi-eng/Hypixel-Cosmetic-modd/raw/claude/funny-goldberg-heyqvp/downloads/cosmeticstudio-mc26.3-latest.jar) |
 | 26.1.2 | 0.155.3+26.1.2 | [cosmeticstudio-mc26.1.2-latest.jar](https://github.com/skylerressi-eng/Hypixel-Cosmetic-modd/raw/claude/funny-goldberg-heyqvp/downloads/cosmeticstudio-mc26.1.2-latest.jar) |
 
-Both need Fabric Loader 0.19.5 or newer. These links always point to the newest build.
+Both need Fabric Loader 0.19.5 or newer. [Mod Menu](https://modrinth.com/mod/modmenu) is optional (adds a
+Configure button). These links always point to the newest build.
+
+## Features
+
+### `/cosmetic` (and `/cosmetic config`)
+- Live 3D preview of you in your current armor: drag to rotate, scroll to zoom.
+- Slot buttons for helmet, chestplate, leggings, boots and pet.
+- **Dyes** tab: all 69 SkyBlock dyes as colour swatches (27 animated ones animate in the grid and on you).
+  Search, sort (A–Z / colour / rarity), filter (static / animated / by rarity).
+- **Runes** tab: all 69 runes with levels I–III, coloured like in game, with description, rarity and the slot
+  SkyBlock normally allows. Filter "Fits piece" / all / by slot type; sort A–Z / rarity / slot.
+- Hover anything to preview it live; click to select (click again to remove).
+- Apply · Clear piece · Reset all · Done, and named presets ("Birch Fit") that store armor + pet together.
+- Clear messages instead of silent failures: non-leather pieces show "isn't dyeable", runes on the wrong
+  slot explain how to allow them, unverified rune effects say so.
+
+### Dyes
+- Recolours leather-based armor **when worn and as item icons** (inventory, hotbar, GUI). Same rule as
+  SkyBlock: only dyeable (leather) pieces change.
+- Exact hex colours from the NEU REPO. Animated dyes interpolate smoothly between NEU's frames.
+
+### Runes
+- Client-side particles using vanilla particles, emitted from the piece they're on (head, body, legs, feet),
+  triggered like the real thing (ambient, while walking, or when you swing).
+- Follows the vanilla **Particles** video setting, plus an on/off switch, a density slider and
+  "Off in Dungeons / Kuudra" switches.
+- "Any rune on any piece" config toggle (off = SkyBlock's slot rules).
+- **No public source documents what rune particles look like**, so the effects shipped are clearly marked
+  approximations and are hidden unless you enable "Show unverified rune effects". See `MISSING_DATA.md`.
+
+### Pets
+- **Blocks**: every block in the game (read from the block registry), with slow spin and gentle bob.
+- **Animals**: every living mob (read from the entity registry), rendered with its normal model and idle
+  animations (age-driven blinking/tails, head turning, walk cycle while following).
+- Positions: follow me (lags behind like a SkyBlock pet), left/right shoulder, on my head, left/right arm
+  (moves with the arm), floating behind me. Scale slider and X/Y/Z offsets.
+- Custom name tag (max 24 chars) with a show/hide toggle.
+- "Hide my real SkyBlock pet": hides your own pet's two armor stands on your screen only. Identified the same
+  way other SkyBlock mods do: name tag `[Lv99] Ammonite` (SkyHanni's pattern), matched against the
+  "Pet:" line of the tab list, plus the player-head armor stand just below it.
+
+### Persistence
+- `config/cosmeticstudio/cosmetics.json`: armor cosmetics keyed by the SkyBlock item **UUID** (from the item's
+  custom data) so they follow that exact item between armor sets; items without a UUID fall back to per-slot.
+- `config/cosmeticstudio/presets.json`, `config/cosmeticstudio/config.json`.
+- `config/cosmeticstudio/rune_effects.json` (optional): your own rune effect overrides.
+- Catalog refreshes from GitHub in the background and is cached (`catalog-cache.json`), so new dyes/runes
+  work without a mod update.
+
+### Multiplayer sync (optional, self-hosted)
+- Set the sync server URL in the config (blank = off). Nothing is sent anywhere until you do.
+- Login uses Mojang's session server exactly like joining an online-mode server (`joinServer` from the
+  client, `hasJoined` on the server), so nobody can set cosmetics for someone else's UUID.
+- You upload only what you're wearing right now, resolved per slot (item UUIDs are never sent), and your pet.
+- Nearby players are fetched in batches and cached for 60 seconds. Players without the mod show nothing.
+- The server only accepts known dye/rune/block/entity IDs. Pet names (the only free text) are limited to 24
+  characters and run through a profanity filter, and you can hide other people's pet names.
+
+## Safety and Hypixel rules
+- Purely visual: no gameplay advantage, no automation, no macros.
+- Never sends chat, commands or packets to Hypixel, and never modifies packets sent to Hypixel.
+  `/cosmetic` is a client-side command, location detection only *reads* the scoreboard/tab list
+  (no `/locraw`, no Mod API packets), and all particles/pets are spawned locally.
+- Sync traffic goes only to the server URL you configure.
+
+## Testing it in game
+1. Install Fabric Loader + Fabric API for your version and drop the jar in `mods`.
+2. Join Hypixel SkyBlock wearing **leather-based armor** (e.g. Farm Suit, any dyed leather set).
+3. `/cosmetic` → pick the chestplate → hover dyes (preview), click one, press **Done**. Your worn chestplate
+   and its inventory icon change colour. Swap to another set: the cosmetic stays on the original item.
+4. Select a non-leather piece → the Dyes tab says it isn't dyeable.
+5. Runes: `/cosmetic config` → turn on "Show unverified rune effects" → `/cosmetic` → Runes → pick e.g.
+   Rainbow Rune III on boots → walk. Toggle the vanilla Particles setting / density slider to see it change.
+6. Pets: Pet slot → Animals → Fox → Settings: name it, try each Position, scale/offsets, and
+   "Hide my real SkyBlock pet". Press F5 to see it.
+7. Presets: type "Birch Fit" → Save; change things; click "Load: Birch Fit" → Apply.
+8. Sync: run the server (below) on a host both players can reach, set the URL in both clients' config,
+   stand near each other → each sees the other's dyes/runes/pet within a few seconds.
+
+## Sync server (`server/`)
+TypeScript + Fastify + SQLite (Node's built-in `node:sqlite`, no native modules).
+
+```bash
+cd server
+docker compose up -d --build
+```
+
+Then set `syncServerUrl` to `http://<host>:8080` (use a TLS reverse proxy such as Caddy for public use and set
+`TRUST_PROXY=true`). Data lives in the `sync-data` volume. Environment: `PORT`, `DB_PATH`, `CATALOG_DIR`,
+`TRUST_PROXY`, `PROFANITY_EXTRA_FILE`, `MOJANG_SESSION_SERVER`.
+
+API: `POST /v1/auth/challenge`, `POST /v1/auth/verify`, `PUT /v1/cosmetics`, `DELETE /v1/cosmetics`,
+`GET /v1/cosmetics?uuids=a,b,c` (max 100), `GET /v1/health`. Rate limits: 120 req/min per IP overall,
+10/min for auth, 30/min uploads, 60/min batch reads.
+
+## Data (`generator/`, `catalog/`)
+```bash
+python3 generator/generate.py                 # dyes + runes from NEU REPO, cross-checked with Hypixel's API
+python3 generator/approximate_rune_effects.py # unverified, opt-in rune effect approximations
+python3 generator/registry_ids.py             # block/entity id allowlist for the server
+```
+- NEU REPO (MIT, © Moulberry) provides dye hex colours, animated-dye frames, rune names/levels/rarities/slots.
+- Hypixel's `/v2/resources/skyblock/items` does not list dyes or runes individually (runes are a generic
+  `RUNE` item), so it's used as a cross-check only.
+- Anything unverified is listed in `MISSING_DATA.md` (animated-dye speed, rune particle effects).
 
 ## Building
-
 ```bash
 ./gradlew :mod:build                 # Minecraft 26.3 (default)
 ./gradlew :mod:build -Pmc=26.1.2     # Minecraft 26.1.2
+./gradlew :mod:test                  # unit tests
+xvfb-run -a ./gradlew :mod:runClientGameTest   # real client: dyes, GUI, runes, pets (screenshots in mod/build/run/clientGameTest/screenshots)
+cd server && npm ci && npm test       # server tests
 ```
+Per-version values are in `versions/<mc>.properties`; the few APIs that differ between versions live in
+`mod/src/mc<version>/java/.../compat/Compat.java`.
 
-Per-version values live in `versions/<mc>.properties`. Jars are written to
-`mod/build/libs/cosmeticstudio-mc<mc>-<version>.jar`.
+## Toolchain (verified 2026-11-08)
+| | Version |
+|---|---|
+| Minecraft | 26.3 and 26.1.2 |
+| Fabric Loader | 0.19.5+ (built against 0.19.5) |
+| Fabric API | 0.165.2+26.3 / 0.155.3+26.1.2 |
+| Fabric Loom | 1.19.4 (`net.fabricmc.fabric-loom`) |
+| Gradle | 9.8.2 (wrapper) |
+| Java | 25 |
+| Mappings | none: 26.x ships unobfuscated (Mojang names) |
+| Mod Menu (optional) | 21.0.0 / 18.0.2 |
 
-## Testing
-
-```bash
-./gradlew :mod:test                 # unit tests
-./gradlew :mod:runClientGameTest    # launches a real client, runs in-game tests, saves screenshots
-```
-
-Screenshots land in `mod/build/run/clientGameTest/screenshots/`. On a headless Linux box, wrap the game
-test with `xvfb-run -a` and install `mesa-vulkan-drivers` (the game falls back to Vulkan via llvmpipe).
-
-## Milestones
-
-| # | Milestone | Status |
-|---|---|---|
-| 1 | Project setup, build, launch, in-game smoke test, CI | ✅ |
-| 2 | Data generator + bundled catalog + MISSING_DATA.md | |
-| 3 | Data storage + client-side dyes on worn armor | |
-| 4 | `/cosmetic` GUI with preview, search, sort, filters | |
-| 5 | Rune particles | |
-| 6 | Pet cosmetics | |
-| 7 | Presets, share codes | |
-| 8 | Sync server + mod networking | |
-| 9 | Mod Menu config, polish, release | |
+## Code layout
+| Package | Purpose |
+|---|---|
+| `catalog` | Dye/rune/effect data, loading, cache + remote refresh |
+| `model`, `store` | Look / armor / pet model, JSON persistence + presets |
+| `resolve` | Which cosmetic applies where (preview > saved > remote) |
+| `render` | Dye hook glue, pet layer + pet entities, rune particles |
+| `skyblock` | Read-only location detection, item UUIDs, real-pet hiding |
+| `gui`, `config` | `/cosmetic` screen, widgets, settings screen, Mod Menu |
+| `sync` | Sync client + remote cache |
+| `mixin` | 3 small mixins: armor dye colour, item icon dye colour, skip rendering hidden pet stands |

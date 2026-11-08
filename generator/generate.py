@@ -209,13 +209,20 @@ def write_missing(missing: list[str], dyes: list[dict], runes: list[dict]) -> No
         "No public dataset describes what each rune's particles look like (type, shape, colour, rate). NEU REPO",
         "only has the in-game description, listed below. Until an entry is added to `catalog/rune_effects.json`",
         "with `\"verified\": true`, the mod shows the rune as **effect data missing**. An opt-in config toggle",
-        "(\"Show unverified approximate rune effects\", off by default) can display name-based approximations,",
-        "which are labelled as approximate in the GUI.",
+        "(\"Show unverified rune effects\", off by default) displays the keyword-based approximations from",
+        "`generator/approximate_rune_effects.py`, which are labelled as approximate in the GUI.",
         "",
-        "| Rune | Slot | In-game description | Verified effect |",
-        "|---|---|---|---|",
+        "| Rune | Slot | In-game description | Current approximation (unverified) | Verified effect |",
+        "|---|---|---|---|---|",
     ]
-    lines += [f"| {r['name']} (`{r['id']}`) | {r['slotLabel']} | {r['description']} | |" for r in runes]
+    approx = {}
+    effects_file = ROOT / "catalog" / "rune_effects.json"
+    if effects_file.exists():
+        for rid, eff in json.loads(effects_file.read_text()).get("effects", {}).items():
+            if not eff.get("verified"):
+                em = eff["emitters"][0]
+                approx[rid] = f"{em['particle'].removeprefix('minecraft:')}{' ' + em['color'] if em.get('color') else ''}, {em['shape'].lower()}, {em['trigger'].lower()}"
+    lines += [f"| {r['name']} (`{r['id']}`) | {r['slotLabel']} | {r['description']} | {approx.get(r['id'], 'none')} | |" for r in runes]
     lines += ["", "## Other gaps found while generating", ""]
     lines += missing or ["- None."]
     MISSING.write_text("\n".join(lines) + "\n")

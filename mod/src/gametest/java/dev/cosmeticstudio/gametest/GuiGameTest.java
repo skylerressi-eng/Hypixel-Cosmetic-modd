@@ -34,6 +34,9 @@ public class GuiGameTest implements FabricClientGameTest {
 			context.clickScreenButton("cosmeticstudio.tab.pet_settings");
 			context.waitTicks(3);
 			context.takeScreenshot("m4-gui-pet-settings");
+			context.runOnClient(mc -> Compat.setScreen(new dev.cosmeticstudio.config.ConfigScreen(null)));
+			context.waitTicks(3);
+			context.takeScreenshot("m9-config");
 			context.runOnClient(mc -> Compat.setScreen(null));
 		}
 	}

@@ -3,6 +3,7 @@ package dev.cosmeticstudio.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.cosmeticstudio.CosmeticStudioClient;
+import dev.cosmeticstudio.compat.Compat;
 import dev.cosmeticstudio.gui.PetCatalog;
 import dev.cosmeticstudio.model.PetCosmetic;
 import dev.cosmeticstudio.resolve.CosmeticResolver;
@@ -79,7 +80,7 @@ public final class PetLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 				(left ? model.leftArm : model.rightArm).translateAndRotate(ps);
 				ps.translate(left ? 0.06f : -0.06f, 0.55f, -0.18f);
 				flip(ps);
-				ps.rotateDegrees(Axis.XP, 90f); // stand on the outstretched forearm
+				ps.last().rotate(Axis.XP.rotationDegrees(90f)); // stand on the outstretched forearm
 				base = 0.28f;
 			}
 			case BEHIND -> {
@@ -107,7 +108,7 @@ public final class PetLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 			ps.pushPose();
 			ps.translate(0, height + 0.15f, 0);
 			billboard(ps);
-			out.submitNameTag(ps, new Vec3(0, -0.25, 0), 0, Component.literal(pet.name), false, light, camera);
+			Compat.submitNameTag(out, ps, new Vec3(0, -0.25, 0), Component.literal(pet.name), light, camera);
 			ps.popPose();
 		}
 		ps.popPose();
@@ -170,7 +171,7 @@ public final class PetLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 		if (blockState.isEmpty()) return 0;
 		ps.pushPose();
 		ps.scale(scale, scale, scale);
-		if (pet.spin) ps.rotateDegrees(Axis.YP, (t * 2f) % 360);
+		if (pet.spin) ps.last().rotate(Axis.YP.rotationDegrees((t * 2f) % 360));
 		ps.translate(-0.5f, 0, -0.5f);
 		blockState.submit(ps, out, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
 		ps.popPose();
@@ -213,7 +214,7 @@ public final class PetLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 	}
 
 	private void refreshCamera(Minecraft mc) {
-		Camera cam = mc.gameRenderer.mainCamera();
+		Camera cam = Compat.mainCamera();
 		camera.orientation.set(cam.rotation());
 		camera.pos = cam.position();
 	}

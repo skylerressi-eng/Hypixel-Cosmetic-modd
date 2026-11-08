@@ -30,7 +30,7 @@ public final class ModConfig {
 	// Network
 	public boolean syncEnabled = true;
 	public String syncServerUrl = "";
-	public String catalogUrl = "https://raw.githubusercontent.com/skylerressi-eng/Hypixel-Cosmetic-modd/main/catalog/cosmetics.json";
+	public String catalogUrl = "https://raw.githubusercontent.com/skylerressi-eng/Hypixel-Cosmetic-modd/HEAD/catalog/cosmetics.json";
 
 	private transient Path file;
 

@@ -45,6 +45,12 @@ fabricApi {
 	}
 }
 
+// For end-to-end sync tests: ./gradlew :mod:runClientGameTest -PsessionHost=http://127.0.0.1:18090 -PsyncUrl=http://127.0.0.1:18080
+loom.runs.configureEach {
+	if (project.hasProperty('sessionHost')) vmArg "-Dminecraft.api.session.host=${project.sessionHost}"
+	if (project.hasProperty('syncUrl')) vmArg "-Dcosmeticstudio.testSyncUrl=${project.syncUrl}"
+}
+
 processResources {
 	// Bundle the generated catalog (see generator/generate.py) into the jar.
 	from(rootProject.file('catalog')) {

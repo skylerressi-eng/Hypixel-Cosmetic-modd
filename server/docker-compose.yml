@@ -1,0 +1,21 @@
+# Self-host the Cosmetic Studio sync server:
+#   cd server && docker compose up -d --build
+# Then set "syncServerUrl" in the mod config to http(s)://<your-host>:8080
+# Put it behind a TLS reverse proxy (Caddy/nginx) for public use and set TRUST_PROXY=true.
+services:
+  sync:
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+    image: cosmetic-studio-sync:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      TRUST_PROXY: "false"
+      # PROFANITY_EXTRA_FILE: /config/profanity.txt
+    volumes:
+      - sync-data:/data
+      # - ./profanity.txt:/config/profanity.txt:ro
+volumes:
+  sync-data:
