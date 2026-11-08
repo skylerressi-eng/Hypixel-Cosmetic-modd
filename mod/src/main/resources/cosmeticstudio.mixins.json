@@ -1,0 +1,7 @@
+{
+	"required": true,
+	"package": "dev.cosmeticstudio.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [],
+	"injectors": { "defaultRequire": 1 }
+}

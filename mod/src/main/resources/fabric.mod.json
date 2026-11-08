@@ -1,0 +1,21 @@
+{
+	"schemaVersion": 1,
+	"id": "cosmeticstudio",
+	"version": "${version}",
+	"name": "Cosmetic Studio",
+	"description": "Client-side, purely visual Hypixel SkyBlock cosmetics: preview and apply dyes, runes and custom pets. Other Cosmetic Studio users can see yours.",
+	"authors": ["skylerressi-eng"],
+	"contact": { "sources": "https://github.com/skylerressi-eng/Hypixel-Cosmetic-modd" },
+	"environment": "client",
+	"entrypoints": {
+		"client": ["dev.cosmeticstudio.CosmeticStudioClient"]
+	},
+	"mixins": ["cosmeticstudio.mixins.json"],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	},
+	"suggests": { "modmenu": "*" }
+}
