@@ -26,6 +26,9 @@ public final class ModConfig {
 	/** Hide the server's particles from runes really applied to your items, so they don't mix with cosmetic runes. */
 	public boolean hideRealRunes = false;
 
+	// Pets
+	public boolean petAnimations = true;
+
 	// Dyes
 	public boolean onlyInSkyBlock = false;
 

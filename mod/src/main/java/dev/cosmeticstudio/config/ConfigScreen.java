@@ -41,6 +41,7 @@ public final class ConfigScreen extends Screen {
 		toggle("show_others_pets", cfg.showOthersPets, v -> cfg.showOthersPets = v, w);
 		toggle("show_others_pet_names", cfg.showOthersPetNames, v -> cfg.showOthersPetNames = v, w);
 		toggle("only_skyblock", cfg.onlyInSkyBlock, v -> cfg.onlyInSkyBlock = v, w);
+		toggle("pet_animations", cfg.petAnimations, v -> cfg.petAnimations = v, w);
 
 		colX = right;
 		row = 0;

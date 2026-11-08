@@ -74,6 +74,15 @@ Configure button). These links always point to the newest build.
   way other SkyBlock mods do: name tag `[Lv99] Ammonite` (SkyHanni's pattern), matched against the
   "Pet:" line of the tab list, plus the player-head armor stand just below it.
 
+### Cute pet animations (toggle: "Cute pet animations")
+- **Stand still a few seconds** and pets play: random hops, happy spins, looking around, and a signature move per
+  mob — fox pounce, rabbit hop, sheep grazing, dog tail wag + head tilt, chicken flapping, allay dance, parrot
+  party, panda sneeze, bee roll, frog croak, axolotl playing dead, armadillo peek.
+- **Wait ~20 s** and dogs, cats, foxes, pandas and parrots sit; **~40 s** and they fall asleep (fox curls up, cat
+  lies down, panda rolls on its back, armadillo hides in its shell) with floating "z Z z".
+- **Crouch next to your pet** for hearts and a happy hop (wakes it up). Moving again wakes it up with a hop.
+- Block pets hop and spin too.
+
 ### Persistence
 - `config/cosmeticstudio/cosmetics.json`: armor cosmetics keyed by the SkyBlock item **UUID** (from the item's
   custom data) so they follow that exact item between armor sets; items without a UUID fall back to per-slot.

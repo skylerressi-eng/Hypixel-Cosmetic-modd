@@ -112,5 +112,7 @@
 	"cosmeticstudio.gui.on_your_item": "  (on your item)",
 	"cosmeticstudio.gui.real_rune_tip": "This rune is really on your item. Click to deselect (hide) it; click again to bring it back. Picking another rune hides it automatically.",
 	"cosmeticstudio.gui.real_rune_hidden": "Real rune deselected — it's hidden on your screen",
-	"cosmeticstudio.gui.real_rune_shown": "Real rune selected again — it shows normally"
+	"cosmeticstudio.gui.real_rune_shown": "Real rune selected again — it shows normally",
+	"cosmeticstudio.config.pet_animations": "Cute pet animations",
+	"cosmeticstudio.config.pet_animations.tip": "Pets play when you stand still (fox pounces, rabbit hops, sheep graze, dogs wag…), sit and fall asleep if you wait longer, and show hearts when you crouch next to them."
 }

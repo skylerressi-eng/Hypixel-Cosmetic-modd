@@ -105,11 +105,29 @@ public final class PetLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 		}
 		ps.translate(pet.offsetX * 0.5f, pet.offsetY * 0.5f, pet.offsetZ * 0.5f);
 		float scale = base * pet.scale;
+		PetEntities.Pet anim = owner == null ? null
+				: PetEntities.state(owner.getUUID(), pet.kind == PetCosmetic.Kind.ENTITY ? PetCatalog.entity(pet.id) : null);
+		float apt = mc.getDeltaTracker().getGameTimeDeltaPartialTick(true);
+		if (anim != null) {
+			boolean fox = "minecraft:fox".equals(pet.id);
+			ps.translate(0, PetAnimations.hopHeight(anim, apt, fox) * scale, 0);
+		}
 		float height;
 		if (pet.kind == PetCosmetic.Kind.BLOCK) {
-			height = drawBlock(ps, out, light, state, pet, scale, t);
+			height = drawBlock(ps, out, light, state, pet, scale, t, anim);
 		} else {
 			height = drawEntity(ps, out, light, state, pet, scale, t, owner);
+		}
+		String zzz = anim == null ? null : PetAnimations.sleepText(anim);
+		if (height > 0 && zzz != null) {
+			refreshCamera(mc);
+			ps.pushPose();
+			ps.translate(0.15f, height + 0.05f + (anim.tick % 45) / 45f * 0.25f, 0);
+			ps.scale(0.6f, 0.6f, 0.6f);
+			billboard(ps);
+			Compat.submitNameTag(out, ps, new Vec3(0, -0.5, 0), Component.literal(zzz).withStyle(net.minecraft.ChatFormatting.AQUA), light, camera);
+			ps.popPose();
+			if (pet.showName && pet.name != null) ps.translate(0, 0.25f, 0);
 		}
 		if (height > 0 && pet.showName && pet.name != null && (CosmeticResolver.isLocal(owner) || CosmeticStudioClient.config().showOthersPetNames)) {
 			refreshCamera(mc);
@@ -155,14 +173,18 @@ public final class PetLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 		ps.translate(bx, d.y, bz);
 	}
 
-	private float drawBlock(PoseStack ps, SubmitNodeCollector out, int light, AvatarRenderState state, PetCosmetic pet, float scale, float t) {
+	private float drawBlock(PoseStack ps, SubmitNodeCollector out, int light, AvatarRenderState state, PetCosmetic pet, float scale, float t,
+			PetEntities.@Nullable Pet anim) {
 		Block block = PetCatalog.block(pet.id);
 		if (block == null) return 0;
 		blockResolver.update(blockState, block.defaultBlockState(), EndermanRenderer.BLOCK_DISPLAY_CONTEXT);
 		if (blockState.isEmpty()) return 0;
 		ps.pushPose();
 		ps.scale(scale, scale, scale);
-		if (pet.spin) ps.last().rotate(Axis.YP.rotationDegrees((t * 2f) % 360));
+		boolean asleep = anim != null && anim.mood == PetAnimations.Mood.SLEEP && PetAnimations.enabled();
+		float extraSpin = anim != null && PetAnimations.enabled() ? PetAnimations.spin(anim, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(true)) : 0;
+		if (pet.spin && !asleep) ps.last().rotate(Axis.YP.rotationDegrees((t * 2f) % 360));
+		if (extraSpin != 0) ps.last().rotate(Axis.YP.rotationDegrees(extraSpin));
 		ps.translate(-0.5f, 0, -0.5f);
 		blockState.submit(ps, out, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
 		ps.popPose();
@@ -202,6 +224,14 @@ public final class PetLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 				living.bodyRot = pet.spin ? 180f + (t * 2f) % 360 : 180f;
 				living.walkAnimationPos = 0;
 				living.walkAnimationSpeed = 0;
+			}
+			if (PetAnimations.enabled()) {
+				living.bodyRot += PetAnimations.spin(p, pt);
+				if (p.mood == PetAnimations.Mood.SLEEP || p.mood == PetAnimations.Mood.SIT) {
+					living.walkAnimationSpeed = 0;
+					if (!moving) living.bodyRot = 180f; // settle down facing forward
+				}
+				PetAnimations.apply(es, p, pt, es.ageInTicks);
 			}
 		}
 		ps.pushPose();

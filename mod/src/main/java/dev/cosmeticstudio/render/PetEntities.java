@@ -48,6 +48,11 @@ public final class PetEntities {
 		float yaw, prevYaw;
 		float walkPos, prevWalkPos, walkSpeed;
 		long lastSeen;
+		// Behaviour (see PetAnimations)
+		PetAnimations.Mood mood = PetAnimations.Mood.FOLLOW;
+		PetAnimations.Action action = PetAnimations.Action.NONE;
+		int tick, actionStart, actionLength, nextAction = 60, ownerStill, lastHearts;
+		@Nullable Vec3 lastOwnerPos;
 
 		Vec3 lerpPos(float pt) {
 			return prevPos == null || pos == null ? pos : prevPos.lerp(pos, pt);
@@ -124,6 +129,7 @@ public final class PetEntities {
 			Player owner = mc.level == null ? null : mc.level.getPlayerByUUID(en.getKey());
 			PetCosmetic cosmetic = owner == null ? null : CosmeticResolver.pet(owner);
 			if (owner == null || cosmetic == null) continue;
+			PetAnimations.tick(p, owner, cosmetic, mc.level);
 			move(mc.level, owner, cosmetic, p);
 		}
 	}
@@ -199,6 +205,28 @@ public final class PetEntities {
 	private static float rotateTowards(float from, float to, float max) {
 		float d = Mth.wrapDegrees(to - from);
 		return from + Mth.clamp(d, -max, max);
+	}
+
+	/** Current mood of an owner's pet (tests/debug). */
+	public static PetAnimations.@Nullable Mood mood(UUID owner) {
+		Pet p = PETS.get(owner);
+		return p == null ? null : p.mood;
+	}
+
+	/** Test hook: start an action now (e.g. SIGNATURE = fox pounce, sheep graze…). */
+	public static void startActionForTests(UUID owner, PetAnimations.Action action, int length) {
+		Pet p = PETS.get(owner);
+		if (p == null) return;
+		p.action = action;
+		p.actionStart = p.tick;
+		p.actionLength = length;
+		p.nextAction = p.tick + 10_000;
+	}
+
+	/** Test hook: pretend the owner has been standing still for this many ticks. */
+	public static void setOwnerStillForTests(UUID owner, int ticks) {
+		Pet p = PETS.get(owner);
+		if (p != null) p.ownerStill = ticks;
 	}
 
 	/** Current pet position for an owner (world coordinates), or null. For tests/debug. */

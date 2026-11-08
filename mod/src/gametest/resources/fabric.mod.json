@@ -14,7 +14,8 @@
 			"dev.cosmeticstudio.gametest.SyncGameTest",
 			"dev.cosmeticstudio.gametest.ReplacePetGameTest",
 			"dev.cosmeticstudio.gametest.RealRuneGameTest",
-			"dev.cosmeticstudio.gametest.LookGameTest"
+			"dev.cosmeticstudio.gametest.LookGameTest",
+			"dev.cosmeticstudio.gametest.PetAnimationGameTest"
 		]
 	},
 	"depends": { "cosmeticstudio": "*" }
