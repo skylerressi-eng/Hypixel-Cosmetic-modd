@@ -27,7 +27,7 @@ users' cosmetics through an optional self-hostable sync server.
 | | Version |
 |---|---|
 | Minecraft | 26.3 (also 26.1.2 with Fabric API 0.155.3+26.1.2, Mod Menu 18.0.2) |
-| Fabric Loader | 0.20.1 |
+| Fabric Loader | 0.19.5+ (compiled against 0.19.5, tested on 0.19.5) |
 | Fabric API | 0.165.2+26.3 |
 | Fabric Loom | 1.19.4 (`net.fabricmc.fabric-loom`) |
 | Gradle | 9.8.2 (wrapper) |
@@ -39,10 +39,10 @@ users' cosmetics through an optional self-hostable sync server.
 
 | Minecraft | Fabric API | Jar |
 |---|---|---|
-| 26.3 | 0.165.2+26.3 | [cosmeticstudio-mc26.3-0.1.0.jar](https://github.com/skylerressi-eng/Hypixel-Cosmetic-modd/raw/claude/funny-goldberg-heyqvp/downloads/cosmeticstudio-mc26.3-0.1.0.jar) |
-| 26.1.2 | 0.155.3+26.1.2 | [cosmeticstudio-mc26.1.2-0.1.0.jar](https://github.com/skylerressi-eng/Hypixel-Cosmetic-modd/raw/claude/funny-goldberg-heyqvp/downloads/cosmeticstudio-mc26.1.2-0.1.0.jar) |
+| 26.3 | 0.165.2+26.3 | [cosmeticstudio-mc26.3-latest.jar](https://github.com/skylerressi-eng/Hypixel-Cosmetic-modd/raw/claude/funny-goldberg-heyqvp/downloads/cosmeticstudio-mc26.3-latest.jar) |
+| 26.1.2 | 0.155.3+26.1.2 | [cosmeticstudio-mc26.1.2-latest.jar](https://github.com/skylerressi-eng/Hypixel-Cosmetic-modd/raw/claude/funny-goldberg-heyqvp/downloads/cosmeticstudio-mc26.1.2-latest.jar) |
 
-Both need Fabric Loader 0.20.1 or newer.
+Both need Fabric Loader 0.19.5 or newer. These links always point to the newest build.
 
 ## Building
 
