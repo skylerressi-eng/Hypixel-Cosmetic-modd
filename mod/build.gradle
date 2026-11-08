@@ -2,9 +2,16 @@ plugins {
 	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 }
 
+// Load the per-Minecraft-version properties selected with -Pmc=<version> (default in gradle.properties).
+def versionFile = rootProject.file("versions/${project.mc}.properties")
+if (!versionFile.exists()) throw new GradleException("No versions/${project.mc}.properties; supported: " + rootProject.file('versions').list().sort().join(', '))
+def mcProps = new Properties()
+versionFile.withInputStream { mcProps.load(it) }
+mcProps.each { k, v -> project.ext.set(k as String, v) }
+
 version = project.mod_version
 group = project.maven_group
-base { archivesName = 'cosmeticstudio' }
+base { archivesName = "cosmeticstudio-mc${project.minecraft_version}" }
 
 repositories {
 	// Mod Menu (optional integration, config screen in milestone 9)
@@ -36,9 +43,9 @@ fabricApi {
 }
 
 processResources {
-	def version = project.version
-	inputs.property 'version', version
-	filesMatching('fabric.mod.json') { expand 'version': version }
+	def props = [version: project.version, minecraft_dependency: project.minecraft_dependency]
+	inputs.properties props
+	filesMatching('fabric.mod.json') { expand props }
 }
 
 tasks.withType(JavaCompile).configureEach { it.options.release = 25 }

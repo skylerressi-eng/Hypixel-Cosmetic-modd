@@ -3,6 +3,10 @@ on: [push, pull_request]
 jobs:
   mod:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mc: ['26.3', '26.1.2']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -10,17 +14,17 @@ jobs:
           distribution: temurin
           java-version: 25
       - uses: gradle/actions/setup-gradle@v4
-      - run: ./gradlew :mod:build
+      - run: ./gradlew -Pmc=${{ matrix.mc }} :mod:build
       - name: In-game client tests
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq mesa-vulkan-drivers xvfb
-          xvfb-run -a ./gradlew :mod:runClientGameTest
+          xvfb-run -a ./gradlew -Pmc=${{ matrix.mc }} :mod:runClientGameTest
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: gametest-screenshots
+          name: gametest-screenshots-mc${{ matrix.mc }}
           path: mod/build/run/clientGameTest/screenshots/
       - uses: actions/upload-artifact@v4
         with:
-          name: cosmeticstudio-jar
+          name: cosmeticstudio-mc${{ matrix.mc }}
           path: mod/build/libs/*.jar

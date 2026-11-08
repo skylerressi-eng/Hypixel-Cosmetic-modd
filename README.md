@@ -26,7 +26,7 @@ users' cosmetics through an optional self-hostable sync server.
 
 | | Version |
 |---|---|
-| Minecraft | 26.3 |
+| Minecraft | 26.3 (also 26.1.2 with Fabric API 0.155.3+26.1.2, Mod Menu 18.0.2) |
 | Fabric Loader | 0.20.1 |
 | Fabric API | 0.165.2+26.3 |
 | Fabric Loom | 1.19.4 (`net.fabricmc.fabric-loom`) |
@@ -35,13 +35,24 @@ users' cosmetics through an optional self-hostable sync server.
 | Mappings | none: 26.x ships unobfuscated (Mojang names) |
 | Mod Menu (optional) | 21.0.0 |
 
+## Download
+
+| Minecraft | Fabric API | Jar |
+|---|---|---|
+| 26.3 | 0.165.2+26.3 | [cosmeticstudio-mc26.3-0.1.0.jar](https://github.com/skylerressi-eng/Hypixel-Cosmetic-modd/raw/claude/funny-goldberg-heyqvp/downloads/cosmeticstudio-mc26.3-0.1.0.jar) |
+| 26.1.2 | 0.155.3+26.1.2 | [cosmeticstudio-mc26.1.2-0.1.0.jar](https://github.com/skylerressi-eng/Hypixel-Cosmetic-modd/raw/claude/funny-goldberg-heyqvp/downloads/cosmeticstudio-mc26.1.2-0.1.0.jar) |
+
+Both need Fabric Loader 0.20.1 or newer.
+
 ## Building
 
 ```bash
-./gradlew :mod:build
+./gradlew :mod:build                 # Minecraft 26.3 (default)
+./gradlew :mod:build -Pmc=26.1.2     # Minecraft 26.1.2
 ```
 
-The jar is written to `mod/build/libs/cosmeticstudio-<version>.jar`.
+Per-version values live in `versions/<mc>.properties`. Jars are written to
+`mod/build/libs/cosmeticstudio-mc<mc>-<version>.jar`.
 
 ## Testing
 
