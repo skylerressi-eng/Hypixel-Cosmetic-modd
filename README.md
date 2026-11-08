@@ -9,6 +9,7 @@ Cosmetic Studio users' cosmetics.
 | Minecraft | Fabric API | Jar |
 |---|---|---|
 | 26.3 | 0.165.2+26.3 | [cosmeticstudio-mc26.3-latest.jar](https://github.com/skylerressi-eng/Hypixel-Cosmetic-modd/raw/claude/funny-goldberg-heyqvp/downloads/cosmeticstudio-mc26.3-latest.jar) |
+| 26.2 | 0.161.0+26.2 | [cosmeticstudio-mc26.2-latest.jar](https://github.com/skylerressi-eng/Hypixel-Cosmetic-modd/raw/claude/funny-goldberg-heyqvp/downloads/cosmeticstudio-mc26.2-latest.jar) |
 | 26.1.2 | 0.155.3+26.1.2 | [cosmeticstudio-mc26.1.2-latest.jar](https://github.com/skylerressi-eng/Hypixel-Cosmetic-modd/raw/claude/funny-goldberg-heyqvp/downloads/cosmeticstudio-mc26.1.2-latest.jar) |
 
 Both need Fabric Loader 0.19.5 or newer. [Mod Menu](https://modrinth.com/mod/modmenu) is optional (adds a

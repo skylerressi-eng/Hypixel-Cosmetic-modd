@@ -6,7 +6,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mc: ['26.3', '26.1.2']
+        mc: ['26.3', '26.2', '26.1.2']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
