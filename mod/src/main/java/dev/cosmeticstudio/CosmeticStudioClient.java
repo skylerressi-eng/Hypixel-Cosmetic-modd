@@ -4,6 +4,7 @@ import dev.cosmeticstudio.catalog.CatalogManager;
 import dev.cosmeticstudio.config.ModConfig;
 import dev.cosmeticstudio.render.PetEntities;
 import dev.cosmeticstudio.render.PetLayer;
+import dev.cosmeticstudio.render.RuneParticles;
 import dev.cosmeticstudio.skyblock.Location;
 import dev.cosmeticstudio.skyblock.RealPetHider;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
@@ -47,6 +48,7 @@ public final class CosmeticStudioClient implements ClientModInitializer {
 			Location.tick(mc);
 			RealPetHider.tick(mc);
 			PetEntities.tick();
+			RuneParticles.tick(mc);
 		});
 		// Cosmetic pet = an extra layer on every player model (also shows in the GUI preview).
 		LivingEntityRenderLayerRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {

@@ -82,7 +82,7 @@ public final class Catalog {
 							eo.has("interval") ? Math.max(1, eo.get("interval").getAsInt()) : 10,
 							eo.has("spread") ? eo.get("spread").getAsFloat() : 0.3f,
 							eo.has("speed") ? eo.get("speed").getAsFloat() : 0f,
-							eo.has("color") ? hex(str(eo, "color")) : null));
+							eo.has("color") ? ("rainbow".equalsIgnoreCase(str(eo, "color")) ? RuneEffect.RAINBOW : hex(str(eo, "color"))) : null));
 				}
 				effects.put(entry.getKey(), new RuneEffect(entry.getKey(), o.has("verified") && o.get("verified").getAsBoolean(),
 						o.has("source") ? str(o, "source") : "unknown", List.copyOf(emitters)));

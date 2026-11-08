@@ -15,4 +15,9 @@ public final class Compat {
 	public static @Nullable Screen screen() {
 		return Minecraft.getInstance().screen;
 	}
+
+	/** True while the entity is swinging its arm (used for "on attack" rune effects). */
+	public static boolean isSwinging(net.minecraft.world.entity.LivingEntity e) {
+		return e.swinging;
+	}
 }

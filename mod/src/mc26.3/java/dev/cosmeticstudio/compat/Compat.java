@@ -15,4 +15,23 @@ public final class Compat {
 	public static @Nullable Screen screen() {
 		return Minecraft.getInstance().gui.screen();
 	}
+
+	private static final java.lang.invoke.VarHandle SWING_STATE;
+	static {
+		java.lang.invoke.VarHandle h = null;
+		try {
+			// 26.x is unobfuscated, so this private field name is stable for the version.
+			h = java.lang.invoke.MethodHandles.privateLookupIn(net.minecraft.world.entity.LivingEntity.class, java.lang.invoke.MethodHandles.lookup())
+					.findVarHandle(net.minecraft.world.entity.LivingEntity.class, "swingState", net.minecraft.world.entity.LivingEntity.SwingState.class);
+		} catch (ReflectiveOperationException ignored) {
+		}
+		SWING_STATE = h;
+	}
+
+	/** True while the entity is swinging its arm (used for "on attack" rune effects). */
+	public static boolean isSwinging(net.minecraft.world.entity.LivingEntity e) {
+		if (SWING_STATE == null) return false;
+		var state = (net.minecraft.world.entity.LivingEntity.SwingState) SWING_STATE.get(e);
+		return state != null && state.isSwinging();
+	}
 }

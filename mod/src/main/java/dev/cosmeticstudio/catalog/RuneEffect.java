@@ -9,6 +9,9 @@ import org.jspecify.annotations.Nullable;
  */
 public record RuneEffect(String runeId, boolean verified, String source, List<Emitter> emitters) {
 
+	/** Special colour value: cycle through the hue wheel. */
+	public static final int RAINBOW = -1;
+
 	/** When the emitter fires. */
 	public enum Trigger { AMBIENT, WALK, ATTACK }
 

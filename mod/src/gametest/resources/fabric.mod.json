@@ -9,7 +9,8 @@
 			"dev.cosmeticstudio.gametest.CommandGameTest",
 			"dev.cosmeticstudio.gametest.DyeGameTest",
 			"dev.cosmeticstudio.gametest.GuiGameTest",
-			"dev.cosmeticstudio.gametest.PetGameTest"
+			"dev.cosmeticstudio.gametest.PetGameTest",
+			"dev.cosmeticstudio.gametest.RuneGameTest"
 		]
 	},
 	"depends": { "cosmeticstudio": "*" }

@@ -1,5 +1,861 @@
 {
  "schemaVersion": 1,
- "_comment": "Particle effects per rune. verified=true only for effects checked in game. See MISSING_DATA.md.",
- "effects": {}
+ "_comment": "APPROXIMATE effects inferred from rune names/descriptions (verified=false). See generator/approximate_rune_effects.py and MISSING_DATA.md.",
+ "effects": {
+  "AXE_FADING_BLUE_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.06,
+     "particle": "minecraft:dust",
+     "color": "#3C78FF",
+     "count": 2
+    }
+   ]
+  },
+  "AXE_FADING_GREEN_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.06,
+     "particle": "minecraft:dust",
+     "color": "#3CFF5A",
+     "count": 2
+    }
+   ]
+  },
+  "AXE_FADING_WHITE_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.06,
+     "particle": "minecraft:dust",
+     "color": "#FFFFFF",
+     "count": 2
+    }
+   ]
+  },
+  "AXE_RAINBOW_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.06,
+     "particle": "minecraft:dust",
+     "color": "rainbow",
+     "count": 2
+    }
+   ]
+  },
+  "AXE_SOUL_SLICE_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.06,
+     "particle": "minecraft:soul",
+     "count": 1
+    }
+   ]
+  },
+  "BARK_TUNES_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.08,
+     "particle": "minecraft:note",
+     "count": 1
+    }
+   ]
+  },
+  "BLAZING_SUN_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "POINT",
+     "interval": 8,
+     "spread": 0.35,
+     "particle": "minecraft:flame",
+     "count": 2
+    }
+   ]
+  },
+  "BLOOD_2_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.08,
+     "particle": "minecraft:dust",
+     "color": "#8A0303",
+     "count": 4
+    }
+   ]
+  },
+  "BLOOMING_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "RING",
+     "interval": 6,
+     "spread": 0.55,
+     "particle": "minecraft:cherry_leaves",
+     "count": 1
+    }
+   ]
+  },
+  "CLOUDS_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "WALK",
+     "shape": "TRAIL",
+     "interval": 2,
+     "spread": 0.2,
+     "particle": "minecraft:cloud",
+     "count": 1
+    }
+   ]
+  },
+  "DARKNESS_WITHIN_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "WALK",
+     "shape": "TRAIL",
+     "interval": 2,
+     "spread": 0.2,
+     "particle": "minecraft:large_smoke",
+     "count": 1
+    }
+   ]
+  },
+  "DRAGON_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.3,
+     "speed": 0.05,
+     "particle": "minecraft:reverse_portal",
+     "count": 3
+    }
+   ]
+  },
+  "ENCHANT_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "RING",
+     "interval": 6,
+     "spread": 0.55,
+     "particle": "minecraft:enchant",
+     "count": 4
+    }
+   ]
+  },
+  "ENDERSNAKE_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "WALK",
+     "shape": "TRAIL",
+     "interval": 2,
+     "spread": 0.2,
+     "particle": "minecraft:reverse_portal",
+     "count": 3
+    }
+   ]
+  },
+  "EXPLOSIFALL_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.08,
+     "particle": "minecraft:poof",
+     "count": 2
+    }
+   ]
+  },
+  "FIERY_BURST_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.04,
+     "particle": "minecraft:flame",
+     "count": 2
+    }
+   ]
+  },
+  "FIRE_SPIRAL_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "SPIRAL",
+     "interval": 1,
+     "spread": 0.3,
+     "speed": 0.05,
+     "particle": "minecraft:flame",
+     "count": 2
+    }
+   ]
+  },
+  "FLOWER_CARPET_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "WALK",
+     "shape": "TRAIL",
+     "interval": 2,
+     "spread": 0.2,
+     "particle": "minecraft:cherry_leaves",
+     "count": 1
+    }
+   ]
+  },
+  "FLOWING_FALL_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "WALK",
+     "shape": "TRAIL",
+     "interval": 2,
+     "spread": 0.2,
+     "particle": "minecraft:cherry_leaves",
+     "count": 1
+    }
+   ]
+  },
+  "GEM_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.3,
+     "speed": 0.05,
+     "particle": "minecraft:end_rod",
+     "count": 1
+    }
+   ]
+  },
+  "GOLDEN_CARPET_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "WALK",
+     "shape": "TRAIL",
+     "interval": 2,
+     "spread": 0.2,
+     "particle": "minecraft:dust",
+     "color": "#FFD700",
+     "count": 2
+    }
+   ]
+  },
+  "GOLDEN_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.3,
+     "speed": 0.05,
+     "particle": "minecraft:dust",
+     "color": "#FFD700",
+     "count": 2
+    }
+   ]
+  },
+  "GRAND_FREEZING_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "RING",
+     "interval": 6,
+     "spread": 0.55,
+     "particle": "minecraft:snowflake",
+     "count": 2
+    }
+   ]
+  },
+  "GRAND_GARDENING_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "RING",
+     "interval": 6,
+     "spread": 0.55,
+     "particle": "minecraft:cherry_leaves",
+     "count": 1
+    }
+   ]
+  },
+  "GRAND_LEAFING_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "RING",
+     "interval": 6,
+     "spread": 0.55,
+     "particle": "minecraft:cherry_leaves",
+     "count": 1
+    }
+   ]
+  },
+  "GRAND_SEARING_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "RING",
+     "interval": 6,
+     "spread": 0.55,
+     "particle": "minecraft:flame",
+     "count": 2
+    }
+   ]
+  },
+  "HEARTSPLOSION_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.08,
+     "particle": "minecraft:heart",
+     "count": 1
+    }
+   ]
+  },
+  "HEARTS_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.08,
+     "particle": "minecraft:heart",
+     "count": 1
+    }
+   ]
+  },
+  "ICE_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.3,
+     "speed": 0.05,
+     "particle": "minecraft:snowflake",
+     "count": 2
+    }
+   ]
+  },
+  "ICE_SKATES_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "WALK",
+     "shape": "TRAIL",
+     "interval": 2,
+     "spread": 0.2,
+     "particle": "minecraft:snowflake",
+     "count": 2
+    }
+   ]
+  },
+  "JERRY_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.08,
+     "particle": "minecraft:happy_villager",
+     "count": 2
+    }
+   ]
+  },
+  "LAVATEARS_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.3,
+     "speed": 0.05,
+     "particle": "minecraft:dripping_lava",
+     "count": 1
+    }
+   ]
+  },
+  "LAVA_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.3,
+     "speed": 0.05,
+     "particle": "minecraft:flame",
+     "count": 2
+    }
+   ]
+  },
+  "LIGHTNING_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.08,
+     "particle": "minecraft:electric_spark",
+     "count": 3
+    }
+   ]
+  },
+  "MAGIC_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.3,
+     "speed": 0.05,
+     "particle": "minecraft:witch",
+     "count": 2
+    }
+   ]
+  },
+  "MEOW_MUSIC_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.08,
+     "particle": "minecraft:note",
+     "count": 1
+    }
+   ]
+  },
+  "MUSIC_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.08,
+     "particle": "minecraft:note",
+     "count": 1
+    }
+   ]
+  },
+  "ORNAMENTAL_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "RING",
+     "interval": 6,
+     "spread": 0.55,
+     "particle": "minecraft:cherry_leaves",
+     "count": 1
+    }
+   ]
+  },
+  "PEAFOWL_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "RING",
+     "interval": 6,
+     "spread": 0.55,
+     "particle": "minecraft:cherry_leaves",
+     "count": 1
+    }
+   ]
+  },
+  "PRANCING_PUMPKIN_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "RING",
+     "interval": 6,
+     "spread": 0.55,
+     "particle": "minecraft:dust",
+     "color": "#FF8C00",
+     "count": 2
+    }
+   ]
+  },
+  "RAINBOW_CARPET_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "WALK",
+     "shape": "TRAIL",
+     "interval": 2,
+     "spread": 0.2,
+     "particle": "minecraft:dust",
+     "color": "rainbow",
+     "count": 2
+    }
+   ]
+  },
+  "RAINBOW_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "WALK",
+     "shape": "TRAIL",
+     "interval": 2,
+     "spread": 0.2,
+     "particle": "minecraft:dust",
+     "color": "rainbow",
+     "count": 2
+    }
+   ]
+  },
+  "RAINY_DAY_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "RAIN",
+     "interval": 8,
+     "spread": 0.35,
+     "particle": "minecraft:falling_water",
+     "count": 3
+    }
+   ]
+  },
+  "REDSTONE_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "WALK",
+     "shape": "TRAIL",
+     "interval": 2,
+     "spread": 0.2,
+     "particle": "minecraft:dust",
+     "color": "#FF0000",
+     "count": 3
+    }
+   ]
+  },
+  "SLIMY_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.3,
+     "speed": 0.05,
+     "particle": "minecraft:item_slime",
+     "count": 2
+    }
+   ]
+  },
+  "SMITTEN_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "POINT",
+     "interval": 8,
+     "spread": 0.35,
+     "particle": "minecraft:heart",
+     "count": 1
+    }
+   ]
+  },
+  "SMOKEY_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.3,
+     "speed": 0.05,
+     "particle": "minecraft:large_smoke",
+     "count": 1
+    }
+   ]
+  },
+  "SNOW_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.08,
+     "particle": "minecraft:snowflake",
+     "count": 2
+    }
+   ]
+  },
+  "SOULTWIST_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.08,
+     "particle": "minecraft:soul",
+     "count": 1
+    }
+   ]
+  },
+  "SPARKLING_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "WALK",
+     "shape": "TRAIL",
+     "interval": 2,
+     "spread": 0.2,
+     "particle": "minecraft:end_rod",
+     "count": 1
+    }
+   ]
+  },
+  "SPELLBOUND_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "POINT",
+     "interval": 8,
+     "spread": 0.35,
+     "particle": "minecraft:enchant",
+     "count": 4
+    }
+   ]
+  },
+  "SPIRIT_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.4,
+     "speed": 0.08,
+     "particle": "minecraft:soul",
+     "count": 1
+    }
+   ]
+  },
+  "SUNNY_SPIRAL_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "SPIRAL",
+     "interval": 6,
+     "spread": 0.55,
+     "particle": "minecraft:flame",
+     "count": 2
+    }
+   ]
+  },
+  "SUPER_PUMPKIN_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "AMBIENT",
+     "shape": "RING",
+     "interval": 6,
+     "spread": 0.55,
+     "particle": "minecraft:dust",
+     "color": "#FF8C00",
+     "count": 2
+    }
+   ]
+  },
+  "TIDAL_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "WALK",
+     "shape": "TRAIL",
+     "interval": 2,
+     "spread": 0.2,
+     "particle": "minecraft:splash",
+     "count": 4
+    }
+   ]
+  },
+  "WAKE_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "BURST",
+     "interval": 1,
+     "spread": 0.3,
+     "speed": 0.05,
+     "particle": "minecraft:splash",
+     "count": 4
+    }
+   ]
+  },
+  "WHITE_SPIRAL_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "ATTACK",
+     "shape": "SPIRAL",
+     "interval": 1,
+     "spread": 0.3,
+     "speed": 0.05,
+     "particle": "minecraft:dust",
+     "color": "#FFFFFF",
+     "count": 2
+    }
+   ]
+  },
+  "ZAP_RUNE": {
+   "verified": false,
+   "source": "name-inferred",
+   "emitters": [
+    {
+     "trigger": "WALK",
+     "shape": "TRAIL",
+     "interval": 2,
+     "spread": 0.2,
+     "particle": "minecraft:electric_spark",
+     "count": 3
+    }
+   ]
+  }
+ }
 }
